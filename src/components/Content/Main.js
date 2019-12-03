@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Paper, Grid, Typography, Button } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { hidden } from 'ansi-colors';
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -23,41 +24,47 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Main() {
-    
+
     const classes = useStyles();
     const [state, setState] = React.useState({
         columns: [
             { title: 'Mã đối tác', field: 'code' },
-            { title: 'Tên đối tác', field: 'name' },
-            { title: 'Điện thoại', field: 'phone'},
-            { title: 'Tổng số đơn hàng', field: 'product'},
-            { title: 'Nợ cần trả hiện tại', field: 'debt'},
-            { title: 'Tổng phí giao hàng cần trả', field: 'fee'}
+            {
+                title: 'Tên đối tác', field: 'name', render: (rowData) => (
+                    <Link to='abc' style={{ textDecoration: 'none' }}>
+                        {rowData.name}
+                    </Link>
+                )
+            },
+            { title: 'Điện thoại', field: 'phone' },
+            { title: 'Tổng số đơn hàng', field: 'product' },
+            { title: 'Nợ cần trả hiện tại', field: 'debt' },
+            { title: 'Tổng phí giao hàng cần trả', field: 'fee' }
         ],
         data: [
-            { code:'AH123235', name: 'Nguyễn Địch Long', phone: '0245362258', product: 12, debt: '254,000', fee: '110,000' },
-            { code:'AH166254', name: 'Nguyễn Quang Anh', phone: '0246309819', product: 8, debt: '54,000', fee: '0' },
-            { code:'GB996584', name: 'Nguyễn Quang Hùng', phone: '063547891', product: 18, debt: '435,000', fee: '43,000' },
-            { code:'NF653226', name: 'Phùng Văn Tùng', phone: '089654784', product: 13, debt: '235,000', fee: '35,000' },
-            { code:'VF457812', name: 'Kim Khắc Luân', phone: '023569865', product: 30, debt: '662,000', fee: '0' },
-            { code:'BH164389', name: 'Lê Thị Lan', phone: '099685263', product: 6, debt: '41,000', fee: '11,000' },
-            { code:'CX245986', name: 'Võ Hắc Hạnh Quyên', phone: '087456912', product: 25, debt: '684,000', fee: '54,000' },
+            { code: 'AH123235', name: 'Nguyễn Địch Long', phone: '0245362258', product: 12, debt: '254,000', fee: '110,000' },
+            { code: 'AH166254', name: 'Nguyễn Quang Anh', phone: '0246309819', product: 8, debt: '54,000', fee: '0' },
+            { code: 'GB996584', name: 'Nguyễn Quang Hùng', phone: '063547891', product: 18, debt: '435,000', fee: '43,000' },
+            { code: 'NF653226', name: 'Phùng Văn Tùng', phone: '089654784', product: 13, debt: '235,000', fee: '35,000' },
+            { code: 'VF457812', name: 'Kim Khắc Luân', phone: '023569865', product: 30, debt: '662,000', fee: '0' },
+            { code: 'BH164389', name: 'Lê Thị Lan', phone: '099685263', product: 6, debt: '41,000', fee: '11,000' },
+            { code: 'CX245986', name: 'Võ Hắc Hạnh Quyên', phone: '087456912', product: 25, debt: '684,000', fee: '54,000' },
         ],
-        actions : [{
+        actions: [{
             hidden: true,
             disabled: true,
             isFreeAction: true,
             onClick: (event, rowData) => {
                 console.log("aaaa")
-              }
+            }
         }]
 
     });
 
     return (
-        
+
         <div className={classes.root}>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
             <Grid container spacing={10}>
                 <Grid item xs={10}>
                     <Typography variant="h4" component="h2" style={{ marginBottom: 10 }}>
