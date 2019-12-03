@@ -4,7 +4,7 @@ import { Paper, Grid, Typography, Button } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { hidden } from 'ansi-colors';
 import { Link } from 'react-router-dom'
-import { fetchData } from '../.././API/FetchData'
+import { getRequest, postRequest } from '../.././API/FetchData'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -63,7 +63,7 @@ export default function Main() {
     });
 
     const fetchingData = async () => {
-        const data = await fetchData();
+        const data = await getRequest('deliveries');
         console.log("result", data);
         const newState = {}
         newState.data = data
@@ -111,7 +111,8 @@ export default function Main() {
                         data={state.data}
                         actions={state.actions}
                         editable={{
-                            onRowAdd: newData =>
+                            onRowAdd: async (newData) => {
+                                // await postRequest('deliveries', newData)
                                 new Promise(resolve => {
                                     setTimeout(() => {
                                         resolve();
@@ -121,7 +122,7 @@ export default function Main() {
                                             return { ...prevState, data };
                                         });
                                     }, 600);
-                                }),
+                                })},
                             onRowUpdate: (newData, oldData) =>
                                 new Promise(resolve => {
                                     setTimeout(() => {
