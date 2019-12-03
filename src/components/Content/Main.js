@@ -4,6 +4,7 @@ import { Paper, Grid, Typography, Button } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { hidden } from 'ansi-colors';
 import { Link } from 'react-router-dom'
+import { fetchData } from '../.././API/FetchData'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -60,6 +61,34 @@ export default function Main() {
         }]
 
     });
+
+    const fetchingData = async () => {
+        const data = await fetchData();
+        console.log("result", data);
+        const newState = {}
+        newState.data = data
+        newState.columns = [
+            { title: 'Mã đối tác', field: 'order_id' },
+            {
+                title: 'Tên đối tác', field: 'delivery_unit_id', render: (rowData) => (
+                    <Link to='abc' style={{ textDecoration: 'none' }}>
+                        {rowData.delivery_unit_id}
+                    </Link>
+                )
+            },
+            { title: 'Điện thoại', field: 'shipper_id' },
+            { title: 'Tổng số đơn hàng', field: 'receiver_phone' },
+            { title: 'Nợ cần trả hiện tại', field: 'receiving_address' },
+            { title: 'Tổng phí giao hàng cần trả', field: 'total_cost' }
+        ]
+        setState(newState);
+      };
+    
+    React.useEffect(() => {
+        fetchingData();
+    }, []);
+
+    console.log('STATE:', state);
 
     return (
 
