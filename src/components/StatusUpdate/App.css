@@ -1,0 +1,93 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #09d3ac;
+}
+.mt-20 {
+  margin-top: 20px;
+}
+.mr-0{
+  text-align: right;
+}
+
+#content{
+  padding: 10px;
+  border: solid 3px red;
+}
+.top-wrapper{
+  font-color: green;
+}
+.navbar-header-color{
+  background-color: green;
+}
+
+.ml-20 {
+  margin-left: 20px;
+
+}
+
+.ml-40 {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.mr {
+  margin-right: 5px;
+}
+ 
+.tr {
+  text-align: right;
+  
+} 
+ 
+.img-left {
+  height: 60px;
+  width: 60px;
+  float: left;
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.img-left-50 {
+  height: 50px;
+  width: 50px;
+  float: left;
+  margin-right: 20px;
+  margin-top: 5px;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.mr-50 {
+  margin-right: 30px;
+}
+
+.size-30{
+  font-size: 30px;
+}
+
+.icon {
+  cursor: pointer;
+}
