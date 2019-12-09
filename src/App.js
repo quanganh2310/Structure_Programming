@@ -25,9 +25,9 @@ function App() {
          
           <hr />
           <div className="main-route-place">
-            <Route exact path="/" component={Main} />
-            <Route path="/about" component={DeliveryStatusUpdate} />
-            <Route path="/topics" component={DeliveryStatusShow} />
+            <Route exact path="/" component={DeliveryStatusUpdate} />
+            <Route path="/delivery_units" component={Main} />
+            <Route path="/deliveries" component={DeliveryStatusUpdate} />
           </div>
         </div>
       </BrowserRouter>
