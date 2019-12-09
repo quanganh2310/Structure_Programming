@@ -22,8 +22,8 @@ class App extends Component {
         { id: 'delivery_unit_id', numeric: false, disablePadding: false, label: 'Đơn vị giao hàng' },
         { id: 'shipper_id', numeric: false, disablePadding: false, label: 'Người giao hàng' },
         { id: 'total_cost', numeric: true, disablePadding: false, label: 'Giá trị HĐ' },
-        { id: 'need_collect', numeric: false, disablePadding: false, label: 'Cần thu hộ' },
-        { id: 'money_collected', numeric: false, disablePadding: false, label: 'Tiền thu hộ' },
+        // { id: 'need_collect', numeric: false, disablePadding: false, label: 'Cần thu hộ' },
+        // { id: 'money_collected', numeric: false, disablePadding: false, label: 'Tiền thu hộ' },
         { id: 'status', numeric: false, disablePadding: false, label: 'Trạng thái' },
         { id: 'action', numeric: false, disablePadding: false, label: '' },
       ],
@@ -38,8 +38,8 @@ class App extends Component {
       dense: false,
       rowsPerPage: 5,
       editIdx: -1,
-      query: "",
-      columnToQuery: "order_id", isloading: true
+      query: "1",
+      columnToQuery: "delivery_unit_id", isloading: true
     };
   };
 
@@ -90,7 +90,7 @@ class App extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    // this.updateStatus(e);
+    this.updateStatus(e);
     this.setState({
       changed: 0
     });
@@ -144,17 +144,20 @@ class App extends Component {
 
   updateStatus = (e) => {
     this.state.rows.forEach(row => {
-      const endpoint = "deliveries/" + row.order_id + "/status";
+      let jsonfile = { 
+        "shipper_id" : row.shipper_id,
+        "status" : row.status 
+      };
+      let endpoint = 'deliveries/' + row.order_id + '/status';
       callApi(endpoint, 'PATCH',
-        {},
-        { status: row.status }).then(res => {
+        jsonfile).then(res => {
           console.log(res);
         });
     });
   }
 
   render() {
-
+ 
     const lowerCaseQuery = this.state.query.toLowerCase();
 
     let submitButton = () => {

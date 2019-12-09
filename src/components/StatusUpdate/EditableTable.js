@@ -142,7 +142,7 @@ class EditableTable extends Component {
               onChange={(e) => handleChange(e, y.id, i)}
             >
               <MenuItem value="Pending">Đang xử lý</MenuItem>
-              <MenuItem value="Success">Đang lấy hàng</MenuItem>
+              <MenuItem value="Confirmed">Đang lấy hàng</MenuItem>
               <MenuItem value="Shipping">Đang giao</MenuItem>
               <MenuItem value="Shipped">Đã giao</MenuItem>
             </Select>
@@ -216,8 +216,10 @@ class EditableTable extends Component {
           <TableCell>
             {currentlyEditing ? (
               <i className="material-icons icon" onClick={() => stopEditing()}>close</i>
-            ) : (
-                <i className="material-icons icon" onClick={() => handleRemove(i)}>delete</i>
+            ) 
+            : (
+              <p></p>
+                //<i className="material-icons icon" onClick={() => handleRemove(i)}>delete</i>
               )
             }
           </TableCell>
