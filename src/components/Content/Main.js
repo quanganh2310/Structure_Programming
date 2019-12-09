@@ -4,7 +4,7 @@ import { Paper, Grid, Typography, Button } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { hidden } from 'ansi-colors';
 import { Link } from 'react-router-dom'
-import { getRequest, postRequest } from '../.././API/FetchData'
+import { getRequest, postRequest, deleteRequest } from '../.././API/FetchData'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -29,7 +29,7 @@ export default function Main() {
     const classes = useStyles();
     const [state, setState] = React.useState({
         columns: [
-            { title: 'Mã đối tác', field: 'code' },
+            { title: 'Mã đối tác', field: 'id' },
             {
                 title: 'Tên đối tác', field: 'name', render: (rowData) => (
                     <Link to='abc' style={{ textDecoration: 'none' }}>
@@ -37,19 +37,10 @@ export default function Main() {
                     </Link>
                 )
             },
-            { title: 'Điện thoại', field: 'phone' },
-            { title: 'Tổng số đơn hàng', field: 'product' },
-            { title: 'Nợ cần trả hiện tại', field: 'debt' },
-            { title: 'Tổng phí giao hàng cần trả', field: 'fee' }
+            { title: 'Tổng số đơn hàng', field: 'delivery_time' },
         ],
         data: [
-            { code: 'AH123235', name: 'Nguyễn Địch Long', phone: '0245362258', product: 12, debt: '254,000', fee: '110,000' },
-            { code: 'AH166254', name: 'Nguyễn Quang Anh', phone: '0246309819', product: 8, debt: '54,000', fee: '0' },
-            { code: 'GB996584', name: 'Nguyễn Quang Hùng', phone: '063547891', product: 18, debt: '435,000', fee: '43,000' },
-            { code: 'NF653226', name: 'Phùng Văn Tùng', phone: '089654784', product: 13, debt: '235,000', fee: '35,000' },
-            { code: 'VF457812', name: 'Kim Khắc Luân', phone: '023569865', product: 30, debt: '662,000', fee: '0' },
-            { code: 'BH164389', name: 'Lê Thị Lan', phone: '099685263', product: 6, debt: '41,000', fee: '11,000' },
-            { code: 'CX245986', name: 'Võ Hắc Hạnh Quyên', phone: '087456912', product: 25, debt: '684,000', fee: '54,000' },
+            
         ],
         actions: [{
             hidden: true,
@@ -63,24 +54,30 @@ export default function Main() {
     });
 
     const fetchingData = async () => {
-        const data = await getRequest('deliveries');
+        const data = await getRequest('delivery_units');
         console.log("result", data);
         const newState = {}
         newState.data = data
         newState.columns = [
-            { title: 'Mã đối tác', field: 'order_id' },
+            { title: 'Mã đối tác', field: 'id' },
             {
-                title: 'Tên đối tác', field: 'delivery_unit_id', render: (rowData) => (
+                title: 'Tên đối tác', field: 'name', render: (rowData) => (
                     <Link to='abc' style={{ textDecoration: 'none' }}>
-                        {rowData.delivery_unit_id}
+                        {rowData.name}
                     </Link>
                 )
             },
-            { title: 'Điện thoại', field: 'shipper_id' },
-            { title: 'Tổng số đơn hàng', field: 'receiver_phone' },
-            { title: 'Nợ cần trả hiện tại', field: 'receiving_address' },
-            { title: 'Tổng phí giao hàng cần trả', field: 'total_cost' }
+            { title: 'Phí giao hàng', field: 'base_fee' },
+            { title: 'Tổng số đơn hàng', field: 'delivery_time' },
         ]
+        newState.actions= [{
+            hidden: true,
+            disabled: true,
+            isFreeAction: true,
+            onClick: (event, rowData) => {
+                console.log("aaaa")
+            }
+        }]
         setState(newState);
       };
     
@@ -112,7 +109,7 @@ export default function Main() {
                         actions={state.actions}
                         editable={{
                             onRowAdd: async (newData) => {
-                                // await postRequest('deliveries', newData)
+                                await postRequest('delivery_units', newData)
                                 new Promise(resolve => {
                                     setTimeout(() => {
                                         resolve();
@@ -136,7 +133,8 @@ export default function Main() {
                                         }
                                     }, 600);
                                 }),
-                            onRowDelete: oldData =>
+                            onRowDelete: async(oldData) => {
+                                await deleteRequest('delivery_units', oldData)
                                 new Promise(resolve => {
                                     setTimeout(() => {
                                         resolve();
@@ -146,7 +144,7 @@ export default function Main() {
                                             return { ...prevState, data };
                                         });
                                     }, 600);
-                                }),
+                                })},
                         }}
                     />
                 </Grid>

@@ -8,6 +8,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import DraftsIcon from '@material-ui/icons/Drafts';
 import SendIcon from '@material-ui/icons/Send';
+import {BrowserRouter as Router,Route,
+  Redirect,Switch} from 'react-router-dom';
+import Main from './../Content/Main'
+import DeliveryStatus from './../StatusUpdate/DeliveryStatusUpdate'
 
 const StyledMenu = withStyles({
   paper: {
@@ -58,10 +62,10 @@ export default function MenuBar() {
         aria-haspopup="true"
         variant="contained"
         color="primary"
-        onClick={handleClick}
+        //onClick={}
         style={{marginLeft: 200, marginTop: 20}}
       >
-        Tổng quan
+        Quản lý giao hàng
       </Button>
       
       <Button
@@ -69,72 +73,12 @@ export default function MenuBar() {
         aria-haspopup="true"
         variant="contained"
         color="primary"
-        onClick={handleClick}
+        //onClick={}
         style={{marginLeft: 5, marginTop: 20}}
       >
-        Hàng hóa
+        Quản lý đối tác giao hàng
       </Button>
-      
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="contained"
-        color="primary"
-        onClick={handleClick}
-        style={{marginLeft: 5, marginTop: 20}}
-      >
-        Giao dịch
-      </Button>
-      
-
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="contained"
-        color="primary"
-        onClick={handleClick}
-        style={{marginLeft: 5, marginTop: 20}}
-      >
-        Đối tác
-      </Button>
-      <StyledMenu
-        id="customized-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <StyledMenuItem>
-          <ListItemIcon>
-            <SendIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Khách hàng" />
-        </StyledMenuItem>
-        <StyledMenuItem>
-          <ListItemIcon>
-            <DraftsIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Nhà cung cấp" />
-        </StyledMenuItem>
-        <StyledMenuItem>
-          <ListItemIcon>
-            <InboxIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Đối tác giao hàng" />
-        </StyledMenuItem>
-      </StyledMenu>
-
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="contained"
-        color="primary"
-        onClick={handleClick}
-        style={{marginLeft: 5, marginTop: 20}}
-      >
-        Báo cáo
-      </Button>
-      
+           
     </div>
   );
 }
