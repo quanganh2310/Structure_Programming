@@ -12,6 +12,7 @@ import {BrowserRouter as Router,Route,
   Redirect,Switch} from 'react-router-dom';
 import Main from './../Content/Main'
 import DeliveryStatus from './../StatusUpdate/DeliveryStatusUpdate'
+import { Link } from 'react-router-dom'
 
 const StyledMenu = withStyles({
   paper: {
@@ -57,28 +58,30 @@ export default function MenuBar() {
 
   return (
     <div>
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="contained"
-        color="primary"
-        //onClick={}
-        style={{marginLeft: 200, marginTop: 20}}
-      >
-        Quản lý giao hàng
-      </Button>
-      
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="contained"
-        color="primary"
-        //onClick={}
-        style={{marginLeft: 5, marginTop: 20}}
-      >
-        Quản lý đối tác giao hàng
-      </Button>
-           
+      <Link to='/'>
+        <Button
+          aria-controls="customized-menu"
+          aria-haspopup="true"
+          variant="contained"
+          color="primary"
+          //onClick={}
+          style={{marginLeft: 200, marginTop: 20}}
+        >
+          Quản lý giao hàng
+        </Button>
+      </Link>
+      <Link to='/delivery_units'>
+        <Button
+          aria-controls="customized-menu"
+          aria-haspopup="true"
+          variant="contained"
+          color="primary"
+          //onClick={}
+          style={{marginLeft: 5, marginTop: 20}}
+        >
+          Quản lý đối tác giao hàng
+        </Button>
+      </Link>
     </div>
   );
 }
