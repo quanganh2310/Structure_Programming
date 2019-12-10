@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './../App.css';
-import SearchBar from './SearchBar'
 import callApi from '../../utils/apiCaller'
 import orderBy from "lodash/orderBy";
 import PropTypes from 'prop-types';
@@ -38,8 +37,8 @@ class App extends Component {
       dense: false,
       rowsPerPage: 5,
       editIdx: -1,
-      query: "",
-      columnToQuery: "", isloading: true
+      query: "1",
+      columnToQuery: "delivery_unit_id", isloading: true
     };
   };
 
@@ -257,7 +256,7 @@ class App extends Component {
                   <div className="col s6">
                     <EnhancedTableToolbar numSelected={this.state.selected.length} />
                   </div>
-                  <div className="col s6">
+                  {/* <div className="col s6">
                     <SearchBar
                       query={this.state.query}
                       handleQuery={this.handleQuery}
@@ -267,7 +266,7 @@ class App extends Component {
                     >
 
                     </SearchBar>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className={classes.tableWrapper}>

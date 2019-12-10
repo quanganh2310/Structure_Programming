@@ -9,6 +9,7 @@ import LeftBar from './components/LeftBar/LeftBar'
 import Main from './components/Content/Main'
 import DeliveryStatusUpdate from './components/StatusUpdate/DeliveryStatusUpdate'
 import DeliveryStatusShow from './components/StatusShow/DeliveryStatusShow'
+import DetailUnit from './components/DetailUnit/DetailUnit'
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
               <Route exact path="/" component={DeliveryStatusUpdate} />
               <Route path="/delivery_units" component={Main} />
               <Route path="/deliveries" component={DeliveryStatusUpdate} />
+              <Route path="/detail_unit" component={DetailUnit}/>
             </div>
           </div>
         </Grid>
