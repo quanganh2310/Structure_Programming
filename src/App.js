@@ -14,24 +14,23 @@ import DeliveryStatusShow from './components/StatusShow/DeliveryStatusShow'
 function App() {
   return (
     <div className="mainWrap">
-      <Header />
-      <MenuBar />
-      <Grid
-        container
-        direction="row"
-      >
       <BrowserRouter>
-        <div>
-         
-          <hr />
-          <div className="main-route-place">
-            <Route exact path="/" component={DeliveryStatusUpdate} />
-            <Route path="/delivery_units" component={Main} />
-            <Route path="/deliveries" component={DeliveryStatusUpdate} />
+        <Header />
+        <MenuBar />
+        <Grid
+          container
+          direction="row"
+        >
+          <div>
+            <hr />
+            <div className="main-route-place">
+              <Route exact path="/" component={DeliveryStatusUpdate} />
+              <Route path="/delivery_units" component={Main} />
+              <Route path="/deliveries" component={DeliveryStatusUpdate} />
+            </div>
           </div>
-        </div>
+        </Grid>
       </BrowserRouter>
-      </Grid>
     </div>
   );
 }
