@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import EditableTable from './EditableTable';
 
-class App extends Component {
+class DetailUnit extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,12 +37,18 @@ class App extends Component {
       dense: false,
       rowsPerPage: 5,
       editIdx: -1,
-      query: "1",
+      query: "",
       columnToQuery: "delivery_unit_id", isloading: true
     };
   };
 
   componentDidMount() {
+    const {match: { params }} = this.props
+    console.log(params.unitId)
+    this.setState({
+      query: params.unitId
+    })
+    console.log(this.state.query)
     callApi('deliveries', 'GET', null).then(res => {
       this.setState({
         rows: res.data.deliveries
@@ -58,6 +64,7 @@ class App extends Component {
         shippers: res.data.shippers
       });
     });
+    
   }
 
   handleRemove = (i) => {
@@ -128,19 +135,6 @@ class App extends Component {
     });
   };
 
-  handleQuery = (e) => {
-    this.setState({
-      query: e.target.value
-    })
-  }
-
-  handleColumnSearch = (e, index, value) => {
-    this.setState({
-      columnToQuery: e.target.value
-    });
-    console.log(this.state);
-  }
-
   updateStatus = (e) => {
     this.state.rows.forEach(row => {
       let jsonfile = { 
@@ -156,9 +150,9 @@ class App extends Component {
   }
 
   render() {
- 
-    const lowerCaseQuery = this.state.query.toLowerCase();
-
+    //const { query } = this.props.match.params
+    //const query = this.props
+    console.log(this.state.query)
     let submitButton = () => {
       if (this.state.changed === 0) {
         return "Lưu lại";
@@ -256,17 +250,6 @@ class App extends Component {
                   <div className="col s6">
                     <EnhancedTableToolbar numSelected={this.state.selected.length} />
                   </div>
-                  {/* <div className="col s6">
-                    <SearchBar
-                      query={this.state.query}
-                      handleQuery={this.handleQuery}
-                      columnToQuery={this.state.columnToQuery}
-                      handleColumnSearch={this.handleColumnSearch}
-                      headCells={this.state.headCells}
-                    >
-
-                    </SearchBar>
-                  </div> */}
                 </div>
 
                 <div className={classes.tableWrapper}>
@@ -275,7 +258,7 @@ class App extends Component {
                       rows={orderBy(
                         this.state.query
                           ? this.state.rows.filter(x =>
-                            String(x[this.state.columnToQuery]).toLowerCase().includes(lowerCaseQuery)
+                            String(x[this.state.columnToQuery]).toLowerCase().includes(this.state.query)
                           )
                           : this.state.rows
                       )}
@@ -332,4 +315,4 @@ class App extends Component {
 
 
 
-export default App
+export default DetailUnit

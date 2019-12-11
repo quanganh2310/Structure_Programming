@@ -55,11 +55,12 @@ export default function Main() {
             { title: 'Mã đối tác', field: 'id' },
             { title: 'Tên đối tác', field: 'name', render: (rowData) => (
                     <>                    
-                        <Link to='/detail_unit' style={{ textDecoration: 'none' }} >
+                        <Link to={`/detail_unit/${rowData.id}`} style={{ textDecoration: 'none' }} >
                             {rowData.name}
                         </Link>
                         
-                        <Route path="/detail_unit" component={DetailUnit}/>
+                        <Route path="/detail_unit/:id"   render={(props) => <DetailUnit {...props}  />}/>
+             
                     </>
                 )
             },
