@@ -24,8 +24,7 @@ function App() {
         <Route path="/delivery_units" component={Main} />
         <Route path="/deliveries" component={DeliveryStatusUpdate} />
         <Route path="/detail_unit" component={DetailUnit}/>
-            
-        </BrowserRouter>
+      </BrowserRouter>
     </div>
   );
 }

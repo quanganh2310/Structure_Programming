@@ -59,7 +59,7 @@ export default function Main() {
                             {rowData.name}
                         </Link>
                         
-                        <Route path="/detail_unit/:id"   render={(props) => <DetailUnit {...props}  />}/>
+                        <Route path="/detail_unit/:unitId" component={DetailUnit}  />
              
                     </>
                 )

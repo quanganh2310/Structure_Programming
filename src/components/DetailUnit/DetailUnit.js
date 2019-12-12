@@ -43,12 +43,13 @@ class DetailUnit extends Component {
   };
 
   componentDidMount() {
+    //console.log(this.props)
     const {match: { params }} = this.props
-    console.log(params.unitId)
+    console.log(this.props)
     this.setState({
       query: params.unitId
     })
-    console.log(this.state.query)
+    //console.log(this.state.query)
     callApi('deliveries', 'GET', null).then(res => {
       this.setState({
         rows: res.data.deliveries
@@ -152,7 +153,7 @@ class DetailUnit extends Component {
   render() {
     //const { query } = this.props.match.params
     //const query = this.props
-    console.log(this.state.query)
+    //console.log(this.state.query)
     let submitButton = () => {
       if (this.state.changed === 0) {
         return "Lưu lại";
