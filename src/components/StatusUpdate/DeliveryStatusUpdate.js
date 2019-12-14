@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import './../App.css';
+import axios from 'axios';
 import SearchBar from './SearchBar'
+import Pagination from './Pagination'
 import callApi from '../../utils/apiCaller'
 import orderBy from "lodash/orderBy";
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import TablePagination from '@material-ui/core/TablePagination';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -23,12 +24,12 @@ class DeliveryStatusUpdate extends Component {
       headCells: [
         { id: 'order_id', numeric: false, disablePadding: true, label: 'Mã hóa đơn' },
         { id: 'created_at', numeric: false, disablePadding: false, label: 'Ngày tạo' },
-        { id: 'delivery_unit_id', numeric: false, disablePadding: false, label: 'Đơn vị giao hàng' },
-        { id: 'shipper_id', numeric: false, disablePadding: false, label: 'Người giao hàng' },
+        { id: 'unit_name', numeric: false, disablePadding: false, label: 'Đơn vị giao hàng' },
+        { id: 'shipper_name', numeric: false, disablePadding: false, label: 'Người giao hàng' },
         { id: 'total_cost', numeric: true, disablePadding: false, label: 'Giá trị HĐ' },
         // { id: 'need_collect', numeric: false, disablePadding: false, label: 'Cần thu hộ' },
         // { id: 'money_collected', numeric: false, disablePadding: false, label: 'Tiền thu hộ' },
-        { id: 'status', numeric: false, disablePadding: false, label: 'Trạng thái' },
+        { id: 'status_name', numeric: false, disablePadding: false, label: 'Trạng thái' },
         { id: 'action', numeric: false, disablePadding: false, label: '' },
       ],
       status: [
@@ -69,22 +70,74 @@ class DeliveryStatusUpdate extends Component {
     };
   };
 
+  getUnits = async () => {
+    return await axios.get('https://online-selling-website.herokuapp.com/delivery_units');
+  }
+
+  getShippers = async () => {
+    return await axios.get('https://online-selling-website.herokuapp.com/shippers');
+  }
+
+  getDeliveries = async () => {
+    return await axios.get('https://online-selling-website.herokuapp.com/deliveries');
+  }
+
   componentDidMount() {
-    callApi('deliveries', 'GET', null).then(res => {
-      this.setState({
-        rows: res.data.deliveries
-      });
+    this.setState({
+      isloading: true
     });
-    callApi('delivery_units', 'GET', null).then(res => {
-      this.setState({
-        delivery_units: res.data.delivery_units
-      });
-    });
-    callApi('shippers', 'GET', null).then(res => {
-      this.setState({
-        shippers: res.data.shippers
-      });
-    });
+    axios.all([this.getUnits(), this.getShippers(), this.getDeliveries()])
+      .then(axios.spread((units, shippers, deliveries) => {
+        this.setState({
+          delivery_units: units.data.delivery_units,
+          shippers: shippers.data.shippers,
+          rows: deliveries.data.deliveries
+        })
+        this.state.rows.forEach((row) => {
+          this.state.delivery_units.forEach((unit) => {
+            let name2 = 'unit_name'
+            if (unit.id === row.delivery_unit_id) {
+              this.setState({
+                rows: this.state.rows.map(
+                  (r, j) => (r === row ? { ...r, [name2]: unit.name } : r)
+                )
+              })
+            }
+          })
+        })
+
+        this.state.rows.forEach((row) => {
+          this.state.shippers.forEach((shipper) => {
+            let name1 = 'shipper_name'
+            if (shipper.id === row.shipper_id) {
+              this.setState({
+                rows: this.state.rows.map(
+                  (r, j) => (r === row ? { ...r, [name1]: shipper.name } : r)
+                )
+              })
+            }
+          })
+        })
+
+        this.state.rows.forEach((row) => {
+          this.state.status.forEach((st) => {
+            let name1 = 'status_name'
+            if (st.value === row.status) {
+              this.setState({
+                rows: this.state.rows.map(
+                  (r, j) => (r === row ? { ...r, [name1]: st.name } : r)
+                )
+              })
+            }
+          })
+        })
+
+        this.setState({
+          isloading: false
+        });
+
+      }));
+
   }
 
   handleRemove = (i) => {
@@ -170,17 +223,24 @@ class DeliveryStatusUpdate extends Component {
 
   updateStatus = (e) => {
     this.state.rows.forEach(row => {
-      let jsonfile = {
-        "shipper_id": row.shipper_id,
-        "status": row.status
-      };
-      let endpoint = 'deliveries/' + row.order_id + '/status';
-      callApi(endpoint, 'PATCH',
-        jsonfile).then(res => {
-          console.log(res);
-        });
+      this.state.status.forEach(st=>{
+        if (st.name === row.status_name) {
+
+          let jsonfile = {
+            "status": st.value
+          };
+          let endpoint = 'deliveries/' + row.order_id + '/status';
+          callApi(endpoint, 'PATCH',
+            jsonfile).then(res => {
+              console.log(res);
+            });
+
+        }
+      });
+      
     });
   }
+
 
   render() {
 
@@ -276,73 +336,75 @@ class DeliveryStatusUpdate extends Component {
           <div className="mt-50">
             <div className={classes.root}>
               <Paper className={classes.paper}>
-              <Grid container spacing={3}>
-                <Grid item xs={6}>
-                  <EnhancedTableToolbar numSelected={this.state.selected.length} />
-                </Grid>
-                <Grid item xs={6}>
-                  <SearchBar
-                    query={this.state.query}
-                    handleQuery={this.handleQuery}
-                    columnToQuery={this.state.columnToQuery}
-                    handleColumnSearch={this.handleColumnSearch}
-                    headCells={this.state.headCells}
-                  >
-
-                  </SearchBar>
-                </Grid>
-</Grid>
-<div className="mt-30">
-                <div className={classes.tableWrapper}>
-                  <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
-                    <EditableTable
-                      rows={orderBy(
-                        this.state.query
-                          ? this.state.rows.filter(x =>
-                            String(x[this.state.columnToQuery]).toLowerCase().includes(lowerCaseQuery)
-                          )
-                          : this.state.rows
-                      )}
+                <Grid container spacing={3}>
+                  <Grid item xs={6}>
+                    <EnhancedTableToolbar numSelected={this.state.selected.length} />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <SearchBar
+                      query={this.state.query}
+                      handleQuery={this.handleQuery}
+                      columnToQuery={this.state.columnToQuery}
+                      handleColumnSearch={this.handleColumnSearch}
                       headCells={this.state.headCells}
-                      delivery_units={this.state.delivery_units}
-                      shippers={this.state.shippers}
-                      rowsPerPage={this.state.rowsPerPage}
-                      page={this.state.page}
-                      dense={this.state.dense}
-                      selected={this.state.selected}
-                      order={this.state.order}
-                      orderBy={this.state.orderBy}
-                      handleRequestSort={this.handleRequestSort}
-                      editIdx={this.state.editIdx}
-                      handleRemove={this.handleRequestSort}
-                      startEditing={this.startEditing}
-                      handleChange={this.handleChange}
-                      stopEditing={this.stopEditing}
-                      status={this.state.status}
-
                     >
 
-                    </EditableTable>
-                    <div className="ml-40 mt-20">
+                    </SearchBar>
+                  </Grid>
+                </Grid>
+                <div className="mt-30">
+                  <div className={classes.tableWrapper}>
+                    <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
+                      <EditableTable
+                        rows={orderBy(
+                          this.state.query
+                            ? this.state.rows.filter(x =>
+                              String(x[this.state.columnToQuery]).toLowerCase().includes(lowerCaseQuery)
+                            )
+                            : this.state.rows
+                        )}
+                        headCells={this.state.headCells}
+                        delivery_units={this.state.delivery_units}
+                        shippers={this.state.shippers}
+                        rowsPerPage={this.state.rowsPerPage}
+                        page={this.state.page}
+                        dense={this.state.dense}
+                        selected={this.state.selected}
+                        order={this.state.order}
+                        orderBy={this.state.orderBy}
+                        handleRequestSort={this.handleRequestSort}
+                        editIdx={this.state.editIdx}
+                        handleRemove={this.handleRequestSort}
+                        startEditing={this.startEditing}
+                        handleChange={this.handleChange}
+                        stopEditing={this.stopEditing}
+                        status={this.state.status}
 
-                      <Button variant="contained" color="primary" type="submit" name="save">
-                        <i className="material-icons icon left">save</i>&nbsp;
+                        handleChangePage={this.handleChangePage}
+                        handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+
+                      >
+
+                      </EditableTable>
+                      <div className="ml-40 mt-30">
+
+                        <Button variant="contained" color="primary" type="submit" name="save">
+                          <i className="material-icons icon left">save</i>&nbsp;
                         {submitButton()}
 
-                      </Button> &nbsp;
-                    </div>
-                  </form>
+                        </Button> &nbsp;
+                      </div>
+                      <Pagination
+                        rows={this.state.rows}
+                        rowsPerPage={this.state.rowsPerPage}
+                        page={this.state.page}
+                        handleChangePage={this.handleChangePage}
+                        handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                      />
+                    </form>
+                  </div>
                 </div>
-                </div>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
-                  component="div"
-                  count={this.state.rows.length}
-                  rowsPerPage={this.state.rowsPerPage}
-                  page={this.state.page}
-                  onChangePage={this.handleChangePage}
-                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                />
+
               </Paper>
             </div>
           </div>

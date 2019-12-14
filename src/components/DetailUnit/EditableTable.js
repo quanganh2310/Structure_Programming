@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './../App.css';
+import './App.css';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -133,7 +133,7 @@ class EditableTable extends Component {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       }
       if (currentlyEditing) {
-        if (y.id === "status") {
+        if (y.id === "status_name") {
           return (
             <Select
               placeholder={x[y.id]}
@@ -141,10 +141,9 @@ class EditableTable extends Component {
               id="status"
               onChange={(e) => handleChange(e, y.id, i)}
             >
-              <MenuItem value="Pending">Đang xử lý</MenuItem>
-              <MenuItem value="Confirmed">Đang lấy hàng</MenuItem>
-              <MenuItem value="Shipping">Đang giao</MenuItem>
-              <MenuItem value="Shipped">Đã giao</MenuItem>
+              {this.props.status.map((st, index) => {
+                return <MenuItem key={index} value={st.name}>{st.name}</MenuItem>
+              })}
             </Select>
           );
         } else if (y.id === "money_collected") {
@@ -165,30 +164,6 @@ class EditableTable extends Component {
       } else {
         if (y.id === "total_cost") {
           return numberWithCommas(x[y.id]);
-        } else if (y.id === "status") {
-          if (x[y.id] === "Pending") {
-            return "Đang xử lý";
-          } else if (x[y.id] === "Success") {
-            return "Đang lấy hàng";
-          } else if (x[y.id] === "Shipping") {
-            return "Đang giao";
-          } else {
-            return "Đã Giao";
-          }
-        } else if (y.id === "delivery_unit_id") {
-          let unit_name = this.props.delivery_units.map((unit, index) => {
-            if (x[y.id] === unit.id) {
-              return unit.name;
-            }
-          })
-          return unit_name;
-        } else if (y.id === "shipper_id") {
-          let shipper_name = this.props.shippers.map((shipper, index) => {
-            if (x[y.id] === shipper.id) {
-              return shipper.name;
-            }
-          })
-          return shipper_name;
         } else {
           return x[y.id];
         }
@@ -216,10 +191,9 @@ class EditableTable extends Component {
           <TableCell>
             {currentlyEditing ? (
               <i className="material-icons icon" onClick={() => stopEditing()}>close</i>
-            ) 
-            : (
-              <p></p>
-                //<i className="material-icons icon" onClick={() => handleRemove(i)}>delete</i>
+            )
+              : (
+                <p></p>
               )
             }
           </TableCell>
@@ -230,34 +204,36 @@ class EditableTable extends Component {
     const emptyRows = this.props.rowsPerPage - Math.min(this.props.rowsPerPage, this.props.rows.length - this.props.page * this.props.rowsPerPage);
 
     return (
-      <Table
-        className={classes.table}
-        aria-labelledby="tableTitle"
-        size={this.props.dense ? 'small' : 'medium'}
-        aria-label="enhanced table"
-      >
-        <EnhancedTableHead
-          classes={visuallyHidden}
-          numSelected={this.props.selected.length}
-          order={this.props.order}
-          orderBy={this.props.orderBy}
-          onRequestSort={this.props.handleRequestSort}
-          rowCount={this.props.rows.length}
-        />
-        <TableBody>
-          {
-            stableSort(this.props.rows,
-              getSorting(this.props.order, this.props.orderBy))
-              .slice(this.props.page * this.props.rowsPerPage, this.props.page * this.props.rowsPerPage + this.props.rowsPerPage)
-              .map((x, i) => row(x, i, this.props.headCells, this.props.handleRemove, this.props.startEditing, this.props.editIdx, this.props.handleChange, this.props.stopEditing))
-          }
-          {emptyRows > 0 && (
-            <TableRow style={{ height: (this.props.dense ? 33 : 53) * emptyRows }}>
-              <TableCell colSpan={11} />
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <div>
+        <Table
+          className={classes.table}
+          aria-labelledby="tableTitle"
+          size={this.props.dense ? 'small' : 'medium'}
+          aria-label="enhanced table"
+        >
+          <EnhancedTableHead
+            classes={visuallyHidden}
+            numSelected={this.props.selected.length}
+            order={this.props.order}
+            orderBy={this.props.orderBy}
+            onRequestSort={this.props.handleRequestSort}
+            rowCount={this.props.rows.length}
+          />
+          <TableBody>
+            {
+              stableSort(this.props.rows,
+                getSorting(this.props.order, this.props.orderBy))
+                .slice(this.props.page * this.props.rowsPerPage, this.props.page * this.props.rowsPerPage + this.props.rowsPerPage)
+                .map((x, i) => row(x, i, this.props.headCells, this.props.handleRemove, this.props.startEditing, this.props.editIdx, this.props.handleChange, this.props.stopEditing))
+            }
+            {emptyRows > 0 && (
+              <TableRow style={{ height: (this.props.dense ? 33 : 53) * emptyRows }}>
+                <TableCell colSpan={11} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+       </div>
     );
   }
 

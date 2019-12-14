@@ -20,24 +20,18 @@ export default ({ query, handleQuery, columnToQuery, handleColumnSearch, headCel
 
     <div style={{ display: "flex" }}>
         <div style={{ display: "flex", margin: "auto" }}>
-
-            <div className="input-field">
                 <TextField
                     label="Query"
                     id="first_name" type="text"
                     className="validate"
                     value={query}
                     onChange={handleQuery}
-                    floatingLabelFixed
                 />
-            </div>
-            <div className="input-field">
                 <FormControl className={classes.formControl}>
-                    <InputLabel id="select-label">Column</InputLabel>
+                    <InputLabel id="select-label" style={{ marginLeft: "2em"}}>Column</InputLabel>
                     <Select
-                        width="200"
                         id="select-label"
-                        style={{ marginLeft: "2em" }}
+                        style={{ marginLeft: "2em" , minWidth: "7em" }}
                         value={columnToQuery}
                         onChange={handleColumnSearch}
                         displayEmpty className={classes.selectEmpty}
@@ -49,7 +43,6 @@ export default ({ query, handleQuery, columnToQuery, handleColumnSearch, headCel
                         }
                     </Select>
                 </FormControl>
-            </div>
         </div>
     </div>
 );
