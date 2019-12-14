@@ -11,8 +11,12 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import EditableTable from './EditableTable';
+import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 
-class App extends Component {
+
+class DeliveryStatusUpdate extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,6 +30,28 @@ class App extends Component {
         // { id: 'money_collected', numeric: false, disablePadding: false, label: 'Tiền thu hộ' },
         { id: 'status', numeric: false, disablePadding: false, label: 'Trạng thái' },
         { id: 'action', numeric: false, disablePadding: false, label: '' },
+      ],
+      status: [
+        {
+          name: "Đang xử lý",
+          value: "Pending"
+        },
+        {
+          name: "Đã xác nhận",
+          value: "Confirmed"
+        },
+        {
+          name: "Đang giao",
+          value: "Shipping"
+        },
+        {
+          name: "Đã giao",
+          value: "Shipped"
+        },
+        {
+          name: "Đã hủy",
+          value: "Canceled"
+        }
       ],
       shippers: [],
       delivery_units: [],
@@ -144,9 +170,9 @@ class App extends Component {
 
   updateStatus = (e) => {
     this.state.rows.forEach(row => {
-      let jsonfile = { 
-        "shipper_id" : row.shipper_id,
-        "status" : row.status 
+      let jsonfile = {
+        "shipper_id": row.shipper_id,
+        "status": row.status
       };
       let endpoint = 'deliveries/' + row.order_id + '/status';
       callApi(endpoint, 'PATCH',
@@ -157,7 +183,7 @@ class App extends Component {
   }
 
   render() {
- 
+
     const lowerCaseQuery = this.state.query.toLowerCase();
 
     let submitButton = () => {
@@ -167,7 +193,7 @@ class App extends Component {
         return "Lưu lại (" + this.state.changed + " thay đổi)";
       }
     }
-    
+
     const useToolbarStyles = makeStyles(theme => ({
       root: {
         paddingLeft: theme.spacing(2),
@@ -204,7 +230,7 @@ class App extends Component {
               {numSelected} selected
             </Typography>
           ) : (
-              <Typography className={classes.title} variant="h4" id="tableTitle">
+              <Typography variant="h5" color="primary" id="tableTitle">
                 Cập nhật tình trạng giao hàng
             </Typography>
             )}
@@ -221,6 +247,7 @@ class App extends Component {
         width: '100%',
       },
       paper: {
+        padding: theme.spacing(2),
         width: '100%',
         marginBottom: theme.spacing(2),
       },
@@ -245,31 +272,27 @@ class App extends Component {
 
     return (
       <div>
-        <div className="row"></div>
-
-        <div className="row">
-          <div className="col s1"></div>
-          <div className="col s10">
-
+        <Container>
+          <div className="mt-50">
             <div className={classes.root}>
               <Paper className={classes.paper}>
-                <div className="row">
-                  <div className="col s6">
-                    <EnhancedTableToolbar numSelected={this.state.selected.length} />
-                  </div>
-                  <div className="col s6">
-                    <SearchBar
-                      query={this.state.query}
-                      handleQuery={this.handleQuery}
-                      columnToQuery={this.state.columnToQuery}
-                      handleColumnSearch={this.handleColumnSearch}
-                      headCells={this.state.headCells}
-                    >
+              <Grid container spacing={3}>
+                <Grid item xs={6}>
+                  <EnhancedTableToolbar numSelected={this.state.selected.length} />
+                </Grid>
+                <Grid item xs={6}>
+                  <SearchBar
+                    query={this.state.query}
+                    handleQuery={this.handleQuery}
+                    columnToQuery={this.state.columnToQuery}
+                    handleColumnSearch={this.handleColumnSearch}
+                    headCells={this.state.headCells}
+                  >
 
-                    </SearchBar>
-                  </div>
-                </div>
-
+                  </SearchBar>
+                </Grid>
+</Grid>
+<div className="mt-30">
                 <div className={classes.tableWrapper}>
                   <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
                     <EditableTable
@@ -280,35 +303,36 @@ class App extends Component {
                           )
                           : this.state.rows
                       )}
-                      headCells = {this.state.headCells}
-                      delivery_units = {this.state.delivery_units}
-                      shippers = {this.state.shippers}
-                      rowsPerPage = {this.state.rowsPerPage}
-                      page = {this.state.page}
-                      dense = {this.state.dense}
-                      selected = {this.state.selected}
-                      order = {this.state.order}
-                      orderBy = {this.state.orderBy}
-                      handleRequestSort = {this.handleRequestSort}
-                      editIdx = {this.state.editIdx}
-                      handleRemove = {this.handleRequestSort}
-                      startEditing = {this.startEditing}
-                      handleChange = {this.handleChange}
-                      stopEditing = {this.stopEditing}
-
+                      headCells={this.state.headCells}
+                      delivery_units={this.state.delivery_units}
+                      shippers={this.state.shippers}
+                      rowsPerPage={this.state.rowsPerPage}
+                      page={this.state.page}
+                      dense={this.state.dense}
+                      selected={this.state.selected}
+                      order={this.state.order}
+                      orderBy={this.state.orderBy}
+                      handleRequestSort={this.handleRequestSort}
+                      editIdx={this.state.editIdx}
+                      handleRemove={this.handleRequestSort}
+                      startEditing={this.startEditing}
+                      handleChange={this.handleChange}
+                      stopEditing={this.stopEditing}
+                      status={this.state.status}
 
                     >
 
                     </EditableTable>
                     <div className="ml-40 mt-20">
 
-                      <button className="btn waves-effect waves-light green accent-4" type="submit" name="save">
-                        <i className="material-icons icon left">save</i>
+                      <Button variant="contained" color="primary" type="submit" name="save">
+                        <i className="material-icons icon left">save</i>&nbsp;
                         {submitButton()}
 
-                      </button> &nbsp;
+                      </Button> &nbsp;
                     </div>
                   </form>
+                </div>
                 </div>
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25]}
@@ -322,9 +346,7 @@ class App extends Component {
               </Paper>
             </div>
           </div>
-
-          <div className="col s1"></div>
-        </div>
+        </Container>
       </div>
     );
   }
@@ -333,4 +355,4 @@ class App extends Component {
 
 
 
-export default App
+export default DeliveryStatusUpdate

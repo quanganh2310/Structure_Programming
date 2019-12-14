@@ -141,10 +141,9 @@ class EditableTable extends Component {
               id="status"
               onChange={(e) => handleChange(e, y.id, i)}
             >
-              <MenuItem value="Pending">Đang xử lý</MenuItem>
-              <MenuItem value="Confirmed">Đang lấy hàng</MenuItem>
-              <MenuItem value="Shipping">Đang giao</MenuItem>
-              <MenuItem value="Shipped">Đã giao</MenuItem>
+              {this.props.status.map((st,index) => {
+                return <MenuItem key={index} value={st.value}>{st.name}</MenuItem>
+              })}
             </Select>
           );
         } else if (y.id === "money_collected") {
@@ -157,6 +156,20 @@ class EditableTable extends Component {
               className="validate"
             />
           );
+        } else if (y.id === "delivery_unit_id") {
+          let unit_name = this.props.delivery_units.map((unit, index) => {
+            if (x[y.id] === unit.id) {
+              return unit.name;
+            }
+          })
+          return unit_name;
+        } else if (y.id === "shipper_id") {
+          let shipper_name = this.props.shippers.map((shipper, index) => {
+            if (x[y.id] === shipper.id) {
+              return shipper.name;
+            }
+          })
+          return shipper_name;
         } else {
           return x[y.id];
 
