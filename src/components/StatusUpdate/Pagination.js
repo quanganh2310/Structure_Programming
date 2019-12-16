@@ -7,6 +7,8 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import TableFooter from '@material-ui/core/TableFooter';
+import TableRow from '@material-ui/core/TableRow';
 
 class Pagination extends Component {
 
@@ -79,21 +81,24 @@ class Pagination extends Component {
     };
 
     return (
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              component="div"
-              colSpan={3}
-              count={this.props.rows.length}
-              rowsPerPage={this.props.rowsPerPage}
-              page={this.props.page}
-              SelectProps={{
-                inputProps: { 'aria-label': 'rows per page' },
-                native: true,
-              }}
-              onChangePage={this.props.handleChangePage}
-              onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
+      <TableFooter>
+        <TableRow>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+            colSpan={8}
+            count={this.props.rows.length}
+            rowsPerPage={this.props.rowsPerPage}
+            page={this.props.page}
+            SelectProps={{
+              inputProps: { 'aria-label': 'rows per page' },
+              native: true,
+            }}
+            onChangePage={this.props.handleChangePage}
+            onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
+            ActionsComponent={TablePaginationActions}
+          />
+        </TableRow>
+      </TableFooter>
     );
   }
 }

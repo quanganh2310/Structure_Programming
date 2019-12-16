@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './../App.css';
 import axios from 'axios';
 import SearchBar from './SearchBar'
-import Pagination from './Pagination'
 import callApi from '../../utils/apiCaller'
 import orderBy from "lodash/orderBy";
 import PropTypes from 'prop-types';
@@ -12,7 +11,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import EditableTable from './EditableTable';
-import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
@@ -154,25 +152,37 @@ class DeliveryStatusUpdate extends Component {
     this.setState({ editIdx: -1 });
   }
 
-  handleChange = (e, name, i) => {
-    const { value } = e.target;
+  // handleChange = (e, name, i) => {
+  //   const { value } = e.target;
+  //   this.setState(state => ({
+  //     rows: state.rows.map(
+  //       (row, j) => (j === i ? { ...row, [name]: value } : row)
+  //     )
+  //   }));
+  // this.state.rows.map((row,j)=>{
+  //   if (j === i) {
+  //     this.updateStatus(value,row)
+  //   }
+  // })
+  // };
+
+  handleSave = (i, x) => {
+
     this.setState(state => ({
-      rows: state.rows.map(
-        (row, j) => (j === i ? { ...row, [name]: value } : row)
-      )
+      rows: state.rows.map((r, j) => (r.order_id === x.order_id ? x : r))
     }));
-    this.setState({
-      changed: this.state.changed + 1
+
+
+    this.state.rows.map((row, index) => {
+      if (row.order_id === x.order_id) {
+        this.updateStatus(x.status_name, row)
+      }
     });
+    this.stopEditing();
   };
 
   handleSubmit = (e) => {
     e.preventDefault();
-
-    this.updateStatus(e);
-    this.setState({
-      changed: 0
-    });
     console.log(this.state);
 
   }
@@ -221,23 +231,20 @@ class DeliveryStatusUpdate extends Component {
     console.log(this.state);
   }
 
-  updateStatus = (e) => {
-    this.state.rows.forEach(row => {
-      this.state.status.forEach(st=>{
-        if (st.name === row.status_name) {
+  updateStatus = (value, row) => {
+    this.state.status.forEach(st => {
+      if (st.name === value) {
 
-          let jsonfile = {
-            "status": st.value
-          };
-          let endpoint = 'deliveries/' + row.order_id + '/status';
-          callApi(endpoint, 'PATCH',
-            jsonfile).then(res => {
-              console.log(res);
-            });
+        let jsonfile = {
+          "status": st.value
+        };
+        let endpoint = 'deliveries/' + row.order_id + '/status';
+        callApi(endpoint, 'PATCH',
+          jsonfile).then(res => {
+            console.log(res);
+          });
 
-        }
-      });
-      
+      }
     });
   }
 
@@ -376,7 +383,7 @@ class DeliveryStatusUpdate extends Component {
                         editIdx={this.state.editIdx}
                         handleRemove={this.handleRequestSort}
                         startEditing={this.startEditing}
-                        handleChange={this.handleChange}
+                        handleSave={this.handleSave}
                         stopEditing={this.stopEditing}
                         status={this.state.status}
 
@@ -386,21 +393,6 @@ class DeliveryStatusUpdate extends Component {
                       >
 
                       </EditableTable>
-                      <div className="ml-40 mt-30">
-
-                        <Button variant="contained" color="primary" type="submit" name="save">
-                          <i className="material-icons icon left">save</i>&nbsp;
-                        {submitButton()}
-
-                        </Button> &nbsp;
-                      </div>
-                      <Pagination
-                        rows={this.state.rows}
-                        rowsPerPage={this.state.rowsPerPage}
-                        page={this.state.page}
-                        handleChangePage={this.handleChangePage}
-                        handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-                      />
                     </form>
                   </div>
                 </div>
