@@ -5,6 +5,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { makeStyles } from '@material-ui/core/styles';
+import SearchIcon from '@material-ui/icons/Search';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Grid from '@material-ui/core/Grid';
 
 const classes = makeStyles(theme => ({
     formControl: {
@@ -20,29 +23,47 @@ export default ({ query, handleQuery, columnToQuery, handleColumnSearch, headCel
 
     <div style={{ display: "flex" }}>
         <div style={{ display: "flex", margin: "auto" }}>
-                <TextField
-                    label="Query"
-                    id="first_name" type="text"
-                    className="validate"
-                    value={query}
-                    onChange={handleQuery}
-                />
+            <Grid container spacing={1} alignItems="flex-end">
+                <Grid item>
+                    <SearchIcon className="validate" />
+                </Grid>
+                <Grid item>
+                    <TextField
+                        label="Search"
+                        id="first_name" type="text"
+                        className="validate"
+                        value={query}
+                        onChange={handleQuery}
+                    // InputProps={{
+                    //     startAdornment: (
+                    //         <InputAdornment position="start">
+                    //             <SearchIcon className="validate" />
+                    //         </InputAdornment>
+                    //     ),
+                    // }}
+                    />
+                </Grid>
+                <Grid item>
                 <FormControl className={classes.formControl}>
-                    <InputLabel id="select-label" style={{ marginLeft: "2em"}}>Column</InputLabel>
-                    <Select
-                        id="select-label"
-                        style={{ marginLeft: "2em" , minWidth: "7em" }}
-                        value={columnToQuery}
-                        onChange={handleColumnSearch}
-                        displayEmpty className={classes.selectEmpty}
-                    >
-                        {
-                            headCells.map((headCell, index) => (
-                                <MenuItem key={index} value={headCell.id}>{headCell.label}</MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
+                <InputLabel id="select-label" style={{ marginLeft: "2em" }}>Column</InputLabel>
+                <Select
+                    id="select-label"
+                    style={{ marginLeft: "2em", minWidth: "7em" }}
+                    value={columnToQuery}
+                    onChange={handleColumnSearch}
+                    displayEmpty className={classes.selectEmpty}
+                >
+                    {
+                        headCells.map((headCell, index) => (
+                            <MenuItem key={index} value={headCell.id}>{headCell.label}</MenuItem>
+                        ))
+                    }
+                </Select>
+            </FormControl>
+                </Grid>
+            </Grid>
+
+            
         </div>
     </div>
 );

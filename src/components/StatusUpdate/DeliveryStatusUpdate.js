@@ -15,6 +15,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
 
+
 class DeliveryStatusUpdate extends Component {
   constructor(props) {
     super(props);
@@ -348,6 +349,7 @@ class DeliveryStatusUpdate extends Component {
                     <EnhancedTableToolbar numSelected={this.state.selected.length} />
                   </Grid>
                   <Grid item xs={6}>
+
                     <SearchBar
                       query={this.state.query}
                       handleQuery={this.handleQuery}
