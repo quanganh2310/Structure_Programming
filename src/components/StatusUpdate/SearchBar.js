@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
+import FilterListIcon from '@material-ui/icons/FilterList';
 
 const classes = makeStyles(theme => ({
     formControl: {
@@ -43,27 +44,34 @@ export default ({ query, handleQuery, columnToQuery, handleColumnSearch, headCel
                     // }}
                     />
                 </Grid>
-                <Grid item>
-                <FormControl className={classes.formControl}>
-                <InputLabel id="select-label" style={{ marginLeft: "2em" }}>Column</InputLabel>
-                <Select
-                    id="select-label"
-                    style={{ marginLeft: "2em", minWidth: "7em" }}
-                    value={columnToQuery}
-                    onChange={handleColumnSearch}
-                    displayEmpty className={classes.selectEmpty}
-                >
-                    {
-                        headCells.map((headCell, index) => (
-                            <MenuItem key={index} value={headCell.id}>{headCell.label}</MenuItem>
-                        ))
-                    }
-                </Select>
-            </FormControl>
+                <Grid item style={{ marginLeft: "1em" }}>
+                    <FilterListIcon className="validate" />
+                </Grid>
+                <Grid item >
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="select-label"
+                        // style={{ marginLeft: "2em" }}
+                        >
+                            Column
+                        </InputLabel>
+                        <Select
+                            id="select-label"
+                            style={{ marginLeft: "0em", minWidth: "7em" }}
+                            value={columnToQuery}
+                            onChange={handleColumnSearch}
+                            displayEmpty className={classes.selectEmpty}
+                        >
+                            {
+                                headCells.map((headCell, index) => (
+                                    <MenuItem key={index} value={headCell.id}>{headCell.label}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
                 </Grid>
             </Grid>
 
-            
+
         </div>
     </div>
 );
