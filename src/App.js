@@ -18,11 +18,9 @@ function App() {
       <BrowserRouter>
         <Header />
         <MenuBar />
-      
         <Route exact path="/" component={DeliveryStatusUpdate} />
         <Route path="/delivery_units" component={Main} />
         <Route path="/deliveries" component={DeliveryStatusUpdate} />
-        {/* <Route path="/detail_unit" component={DetailUnit}/> */}
         <Route path="/detail_unit/:unitId" component={DetailUnit}  />
 
       </BrowserRouter>

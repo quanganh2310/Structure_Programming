@@ -3,8 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Paper, Grid, Typography, Button } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { hidden } from 'ansi-colors';
-import { Link } from 'react-router-dom'
+import { Link, BrowserRouter, Route, Router } from 'react-router-dom'
 import { getRequest, postRequest, deleteRequest } from '../.././API/FetchData'
+import DetailUnit from '../DetailUnit/DetailUnit';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -29,15 +30,7 @@ export default function Main() {
     const classes = useStyles();
     const [state, setState] = React.useState({
         columns: [
-            { title: 'Mã đối tác', field: 'id' },
-            {
-                title: 'Tên đối tác', field: 'name', render: (rowData) => (
-                    <Link to='abc' style={{ textDecoration: 'none' }}>
-                        {rowData.name}
-                    </Link>
-                )
-            },
-            { title: 'Tổng số đơn hàng', field: 'delivery_time' },
+            
         ],
         data: [
             
@@ -60,11 +53,15 @@ export default function Main() {
         newState.data = data
         newState.columns = [
             { title: 'Mã đối tác', field: 'id' },
-            {
-                title: 'Tên đối tác', field: 'name', render: (rowData) => (
-                    <Link to='abc' style={{ textDecoration: 'none' }}>
-                        {rowData.name}
-                    </Link>
+            { title: 'Tên đối tác', field: 'name', render: (rowData) => (
+                    <>                    
+                        <Link to={`/detail_unit/${rowData.id}`} style={{ textDecoration: 'none' }} >
+                            {rowData.name}
+                        </Link>
+                        
+                        <Route path="/detail_unit/:unitId" component={DetailUnit}  />
+             
+                    </>
                 )
             },
             { title: 'Phí giao hàng', field: 'base_fee' },
@@ -88,7 +85,6 @@ export default function Main() {
     console.log('STATE:', state);
 
     return (
-
         <div className={classes.root}>
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
             <Grid container spacing={10}>

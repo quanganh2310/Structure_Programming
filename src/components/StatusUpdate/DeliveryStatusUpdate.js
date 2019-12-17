@@ -1,31 +1,57 @@
 import React, { Component } from 'react';
 import './../App.css';
+import axios from 'axios';
 import SearchBar from './SearchBar'
 import callApi from '../../utils/apiCaller'
 import orderBy from "lodash/orderBy";
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import TablePagination from '@material-ui/core/TablePagination';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import EditableTable from './EditableTable';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 
-class App extends Component {
+
+
+class DeliveryStatusUpdate extends Component {
   constructor(props) {
     super(props);
     this.state = {
       headCells: [
         { id: 'order_id', numeric: false, disablePadding: true, label: 'Mã hóa đơn' },
         { id: 'created_at', numeric: false, disablePadding: false, label: 'Ngày tạo' },
-        { id: 'delivery_unit_id', numeric: false, disablePadding: false, label: 'Đơn vị giao hàng' },
-        { id: 'shipper_id', numeric: false, disablePadding: false, label: 'Người giao hàng' },
+        { id: 'unit_name', numeric: false, disablePadding: false, label: 'Đơn vị giao hàng' },
+        { id: 'shipper_name', numeric: false, disablePadding: false, label: 'Người giao hàng' },
         { id: 'total_cost', numeric: true, disablePadding: false, label: 'Giá trị HĐ' },
         // { id: 'need_collect', numeric: false, disablePadding: false, label: 'Cần thu hộ' },
         // { id: 'money_collected', numeric: false, disablePadding: false, label: 'Tiền thu hộ' },
-        { id: 'status', numeric: false, disablePadding: false, label: 'Trạng thái' },
+        { id: 'status_name', numeric: false, disablePadding: false, label: 'Trạng thái' },
         { id: 'action', numeric: false, disablePadding: false, label: '' },
+      ],
+      status: [
+        {
+          name: "Đang xử lý",
+          value: "Pending"
+        },
+        {
+          name: "Đã xác nhận",
+          value: "Confirmed"
+        },
+        {
+          name: "Đang giao",
+          value: "Shipping"
+        },
+        {
+          name: "Đã giao",
+          value: "Shipped"
+        },
+        {
+          name: "Đã hủy",
+          value: "Canceled"
+        }
       ],
       shippers: [],
       delivery_units: [],
@@ -38,27 +64,79 @@ class App extends Component {
       dense: false,
       rowsPerPage: 5,
       editIdx: -1,
-      query: "1",
-      columnToQuery: "delivery_unit_id", isloading: true
+      query: "",
+      columnToQuery: "", isloading: true
     };
   };
 
+  getUnits = async () => {
+    return await axios.get('https://online-selling-website.herokuapp.com/delivery_units');
+  }
+
+  getShippers = async () => {
+    return await axios.get('https://online-selling-website.herokuapp.com/shippers');
+  }
+
+  getDeliveries = async () => {
+    return await axios.get('https://online-selling-website.herokuapp.com/deliveries');
+  }
+
   componentDidMount() {
-    callApi('deliveries', 'GET', null).then(res => {
-      this.setState({
-        rows: res.data.deliveries
-      });
+    this.setState({
+      isloading: true
     });
-    callApi('delivery_units', 'GET', null).then(res => {
-      this.setState({
-        delivery_units: res.data.delivery_units
-      });
-    });
-    callApi('shippers', 'GET', null).then(res => {
-      this.setState({
-        shippers: res.data.shippers
-      });
-    });
+    axios.all([this.getUnits(), this.getShippers(), this.getDeliveries()])
+      .then(axios.spread((units, shippers, deliveries) => {
+        this.setState({
+          delivery_units: units.data.delivery_units,
+          shippers: shippers.data.shippers,
+          rows: deliveries.data.deliveries
+        })
+        this.state.rows.forEach((row) => {
+          this.state.delivery_units.forEach((unit) => {
+            let name2 = 'unit_name'
+            if (unit.id === row.delivery_unit_id) {
+              this.setState({
+                rows: this.state.rows.map(
+                  (r, j) => (r === row ? { ...r, [name2]: unit.name } : r)
+                )
+              })
+            }
+          })
+        })
+
+        this.state.rows.forEach((row) => {
+          this.state.shippers.forEach((shipper) => {
+            let name1 = 'shipper_name'
+            if (shipper.id === row.shipper_id) {
+              this.setState({
+                rows: this.state.rows.map(
+                  (r, j) => (r === row ? { ...r, [name1]: shipper.name } : r)
+                )
+              })
+            }
+          })
+        })
+
+        this.state.rows.forEach((row) => {
+          this.state.status.forEach((st) => {
+            let name1 = 'status_name'
+            if (st.value === row.status) {
+              this.setState({
+                rows: this.state.rows.map(
+                  (r, j) => (r === row ? { ...r, [name1]: st.name } : r)
+                )
+              })
+            }
+          })
+        })
+
+        this.setState({
+          isloading: false
+        });
+
+      }));
+
   }
 
   handleRemove = (i) => {
@@ -75,25 +153,37 @@ class App extends Component {
     this.setState({ editIdx: -1 });
   }
 
-  handleChange = (e, name, i) => {
-    const { value } = e.target;
+  // handleChange = (e, name, i) => {
+  //   const { value } = e.target;
+  //   this.setState(state => ({
+  //     rows: state.rows.map(
+  //       (row, j) => (j === i ? { ...row, [name]: value } : row)
+  //     )
+  //   }));
+  // this.state.rows.map((row,j)=>{
+  //   if (j === i) {
+  //     this.updateStatus(value,row)
+  //   }
+  // })
+  // };
+
+  handleSave = (i, x) => {
+
     this.setState(state => ({
-      rows: state.rows.map(
-        (row, j) => (j === i ? { ...row, [name]: value } : row)
-      )
+      rows: state.rows.map((r, j) => (r.order_id === x.order_id ? x : r))
     }));
-    this.setState({
-      changed: this.state.changed + 1
+
+
+    this.state.rows.map((row, index) => {
+      if (row.order_id === x.order_id) {
+        this.updateStatus(x.status_name, row)
+      }
     });
+    this.stopEditing();
   };
 
   handleSubmit = (e) => {
     e.preventDefault();
-
-    this.updateStatus(e);
-    this.setState({
-      changed: 0
-    });
     console.log(this.state);
 
   }
@@ -142,22 +232,26 @@ class App extends Component {
     console.log(this.state);
   }
 
-  updateStatus = (e) => {
-    this.state.rows.forEach(row => {
-      let jsonfile = { 
-        "shipper_id" : row.shipper_id,
-        "status" : row.status 
-      };
-      let endpoint = 'deliveries/' + row.order_id + '/status';
-      callApi(endpoint, 'PATCH',
-        jsonfile).then(res => {
-          console.log(res);
-        });
+  updateStatus = (value, row) => {
+    this.state.status.forEach(st => {
+      if (st.name === value) {
+
+        let jsonfile = {
+          "status": st.value
+        };
+        let endpoint = 'deliveries/' + row.order_id + '/status';
+        callApi(endpoint, 'PATCH',
+          jsonfile).then(res => {
+            console.log(res);
+          });
+
+      }
     });
   }
 
+
   render() {
- 
+
     const lowerCaseQuery = this.state.query.toLowerCase();
 
     let submitButton = () => {
@@ -167,7 +261,7 @@ class App extends Component {
         return "Lưu lại (" + this.state.changed + " thay đổi)";
       }
     }
-    
+
     const useToolbarStyles = makeStyles(theme => ({
       root: {
         paddingLeft: theme.spacing(2),
@@ -204,7 +298,7 @@ class App extends Component {
               {numSelected} selected
             </Typography>
           ) : (
-              <Typography className={classes.title} variant="h4" id="tableTitle">
+              <Typography variant="h5" color="primary" id="tableTitle">
                 Cập nhật tình trạng giao hàng
             </Typography>
             )}
@@ -221,6 +315,7 @@ class App extends Component {
         width: '100%',
       },
       paper: {
+        padding: theme.spacing(2),
         width: '100%',
         marginBottom: theme.spacing(2),
       },
@@ -245,19 +340,16 @@ class App extends Component {
 
     return (
       <div>
-        <div className="row"></div>
-
-        <div className="row">
-          <div className="col s1"></div>
-          <div className="col s10">
-
+        <Container>
+          <div className="mt-50">
             <div className={classes.root}>
               <Paper className={classes.paper}>
-                <div className="row">
-                  <div className="col s6">
+                <Grid container spacing={3}>
+                  <Grid item xs={6}>
                     <EnhancedTableToolbar numSelected={this.state.selected.length} />
-                  </div>
-                  <div className="col s6">
+                  </Grid>
+                  <Grid item xs={6}>
+
                     <SearchBar
                       query={this.state.query}
                       handleQuery={this.handleQuery}
@@ -267,64 +359,50 @@ class App extends Component {
                     >
 
                     </SearchBar>
+                  </Grid>
+                </Grid>
+                <div className="mt-30">
+                  <div className={classes.tableWrapper}>
+                    <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
+                      <EditableTable
+                        rows={orderBy(
+                          this.state.query
+                            ? this.state.rows.filter(x =>
+                              String(x[this.state.columnToQuery]).toLowerCase().includes(lowerCaseQuery)
+                            )
+                            : this.state.rows
+                        )}
+                        headCells={this.state.headCells}
+                        delivery_units={this.state.delivery_units}
+                        shippers={this.state.shippers}
+                        rowsPerPage={this.state.rowsPerPage}
+                        page={this.state.page}
+                        dense={this.state.dense}
+                        selected={this.state.selected}
+                        order={this.state.order}
+                        orderBy={this.state.orderBy}
+                        handleRequestSort={this.handleRequestSort}
+                        editIdx={this.state.editIdx}
+                        handleRemove={this.handleRequestSort}
+                        startEditing={this.startEditing}
+                        handleSave={this.handleSave}
+                        stopEditing={this.stopEditing}
+                        status={this.state.status}
+
+                        handleChangePage={this.handleChangePage}
+                        handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+
+                      >
+
+                      </EditableTable>
+                    </form>
                   </div>
                 </div>
 
-                <div className={classes.tableWrapper}>
-                  <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
-                    <EditableTable
-                      rows={orderBy(
-                        this.state.query
-                          ? this.state.rows.filter(x =>
-                            String(x[this.state.columnToQuery]).toLowerCase().includes(lowerCaseQuery)
-                          )
-                          : this.state.rows
-                      )}
-                      headCells = {this.state.headCells}
-                      delivery_units = {this.state.delivery_units}
-                      shippers = {this.state.shippers}
-                      rowsPerPage = {this.state.rowsPerPage}
-                      page = {this.state.page}
-                      dense = {this.state.dense}
-                      selected = {this.state.selected}
-                      order = {this.state.order}
-                      orderBy = {this.state.orderBy}
-                      handleRequestSort = {this.handleRequestSort}
-                      editIdx = {this.state.editIdx}
-                      handleRemove = {this.handleRequestSort}
-                      startEditing = {this.startEditing}
-                      handleChange = {this.handleChange}
-                      stopEditing = {this.stopEditing}
-
-
-                    >
-
-                    </EditableTable>
-                    <div className="ml-40 mt-20">
-
-                      <button className="btn waves-effect waves-light green accent-4" type="submit" name="save">
-                        <i className="material-icons icon left">save</i>
-                        {submitButton()}
-
-                      </button> &nbsp;
-                    </div>
-                  </form>
-                </div>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
-                  component="div"
-                  count={this.state.rows.length}
-                  rowsPerPage={this.state.rowsPerPage}
-                  page={this.state.page}
-                  onChangePage={this.handleChangePage}
-                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                />
               </Paper>
             </div>
           </div>
-
-          <div className="col s1"></div>
-        </div>
+        </Container>
       </div>
     );
   }
@@ -333,4 +411,4 @@ class App extends Component {
 
 
 
-export default App
+export default DeliveryStatusUpdate

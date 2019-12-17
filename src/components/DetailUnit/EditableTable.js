@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './../App.css';
+import './App.css';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -8,11 +8,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import CreateIcon from '@material-ui/icons/Create';
-import Pagination from './Pagination';
-import InlineForm from './InlineForm';
-import { Collapse } from '@material-ui/core';
-
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 class EditableTable extends Component {
 
@@ -131,47 +128,74 @@ class EditableTable extends Component {
       rowCount: PropTypes.number.isRequired,
     };
 
-    let renderRow = (x, i, y) => {
+    let renderRow = (currentlyEditing, x, i, y, handleChange) => {
       function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       }
+      if (currentlyEditing) {
+        if (y.id === "status_name") {
+          return (
+            <Select
+              placeholder={x[y.id]}
+              value={x[y.id]}
+              id="status"
+              onChange={(e) => handleChange(e, y.id, i)}
+            >
+              {this.props.status.map((st, index) => {
+                return <MenuItem key={index} value={st.name}>{st.name}</MenuItem>
+              })}
+            </Select>
+          );
+        } else if (y.id === "money_collected") {
+          return (
+            <input
+              name={y.id}
+              onChange={(e) => handleChange(e, y.id, i)}
+              value={x[y.id]}
+              type="text"
+              className="validate"
+            />
+          );
+        } else {
+          return x[y.id];
 
-      if (y.id === "total_cost") {
-        return numberWithCommas(x[y.id]);
+        }
+
       } else {
-        return x[y.id];
+        if (y.id === "total_cost") {
+          return numberWithCommas(x[y.id]);
+        } else {
+          return x[y.id];
+        }
       }
-
 
     }
 
-    const row = (x, i, header, handleRemove, startEditing, editIdx, handleSave, stopEditing,status) => {
+    const row = (x, i, header, handleRemove, startEditing, editIdx, handleChange, stopEditing) => {
       const currentlyEditing = editIdx === i;
-      return currentlyEditing ? (
-        <TableRow key={`inline-form-${i}`} >
-          <InlineForm
-            handleSave={handleSave}
-            header={header}
-            x={x}
-            i={i}
-            stopEditing={stopEditing}
-            status={status}
-          />
-        </TableRow>
-      ) : (
-        <TableRow key={`tr-${i}`} >
+      return (
+        <TableRow key={`tr-${i}`}>
           {header.map((y, k) =>
             <TableCell key={`trc-${k}`}>
-              {renderRow(x, i, y)}
+              {renderRow(currentlyEditing, x, i, y, handleChange)}
             </TableCell>
           )}
           <TableCell>
-            <CreateIcon cursor="pointer" onClick={() => startEditing(i)} />
+            {currentlyEditing ? (
+              <i className="material-icons icon" onClick={() => stopEditing()}>check</i>
+            ) : (
+                <i className="material-icons icon" onClick={() => startEditing(i)}>create</i>
+              )
+            }
           </TableCell>
           <TableCell>
-          {/* <Collapse></Collapse> */}
-
-            <p></p>
+            {currentlyEditing ? (
+              <i className="material-icons icon" onClick={() => stopEditing()}>close</i>
+            )
+              : (
+                <p></p>
+              )
+            }
           </TableCell>
         </TableRow>
       );
@@ -200,7 +224,7 @@ class EditableTable extends Component {
               stableSort(this.props.rows,
                 getSorting(this.props.order, this.props.orderBy))
                 .slice(this.props.page * this.props.rowsPerPage, this.props.page * this.props.rowsPerPage + this.props.rowsPerPage)
-                .map((x, i) => row(x, i, this.props.headCells, this.props.handleRemove, this.props.startEditing, this.props.editIdx, this.props.handleSave, this.props.stopEditing,this.props.status))
+                .map((x, i) => row(x, i, this.props.headCells, this.props.handleRemove, this.props.startEditing, this.props.editIdx, this.props.handleChange, this.props.stopEditing))
             }
             {emptyRows > 0 && (
               <TableRow style={{ height: (this.props.dense ? 33 : 53) * emptyRows }}>
@@ -208,15 +232,8 @@ class EditableTable extends Component {
               </TableRow>
             )}
           </TableBody>
-          <Pagination
-            rows={this.props.rows}
-            rowsPerPage={this.props.rowsPerPage}
-            page={this.props.page}
-            handleChangePage={this.props.handleChangePage}
-            handleChangeRowsPerPage={this.props.handleChangeRowsPerPage}
-          />
         </Table>
-      </div>
+       </div>
     );
   }
 
