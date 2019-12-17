@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './../App.css';
+import './App.css';
 import axios from 'axios';
-import callApi from '../../utils/apiCaller';
+import Pagination from './Pagination'
+import callApi from '../../utils/apiCaller'
 import orderBy from "lodash/orderBy";
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -10,12 +11,12 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import EditableTable from './EditableTable';
+import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
 
-
-class DetailUnit extends Component {
+class DeliveryStatusUpdate extends Component {
   constructor(props) {
     super(props);
     this.query = this.props.match.params.unitId
@@ -81,9 +82,12 @@ class DetailUnit extends Component {
   }
 
   componentDidMount() {
+    console.log('PROPS: ', this.props.match.params )
+    
     this.setState({
-      isloading: true
+      isloading: true,
     });
+    console.log("query", this.query)
     axios.all([this.getUnits(), this.getShippers(), this.getDeliveries()])
       .then(axios.spread((units, shippers, deliveries) => {
         this.setState({
@@ -152,23 +156,25 @@ class DetailUnit extends Component {
     this.setState({ editIdx: -1 });
   }
 
-  handleSave = (i, x) => {
-
+  handleChange = (e, name, i) => {
+    const { value } = e.target;
     this.setState(state => ({
-      rows: state.rows.map((r, j) => (r.order_id === x.order_id ? x : r))
+      rows: state.rows.map(
+        (row, j) => (j === i ? { ...row, [name]: value } : row)
+      )
     }));
-
-
-    this.state.rows.map((row, index) => {
-      if (row.order_id === x.order_id) {
-        this.updateStatus(x.status_name, row)
-      }
+    this.setState({
+      changed: this.state.changed + 1
     });
-    this.stopEditing();
   };
 
   handleSubmit = (e) => {
     e.preventDefault();
+
+    this.updateStatus(e);
+    this.setState({
+      changed: 0
+    });
     console.log(this.state);
 
   }
@@ -217,27 +223,38 @@ class DetailUnit extends Component {
     console.log(this.state);
   }
 
-  updateStatus = (value, row) => {
-    this.state.status.forEach(st => {
-      if (st.name === value) {
+  updateStatus = (e) => {
+    this.state.rows.forEach(row => {
+      this.state.status.forEach(st=>{
+        if (st.name === row.status_name) {
 
-        let jsonfile = {
-          "status": st.value
-        };
-        let endpoint = 'deliveries/' + row.order_id + '/status';
-        callApi(endpoint, 'PATCH',
-          jsonfile).then(res => {
-            console.log(res);
-          });
+          let jsonfile = {
+            "status": st.value
+          };
+          let endpoint = 'deliveries/' + row.order_id + '/status';
+          callApi(endpoint, 'PATCH',
+            jsonfile).then(res => {
+              console.log(res);
+            });
 
-      }
+        }
+      });
+      
     });
   }
 
 
   render() {
 
-    const lowerCaseQuery = this.query.toLowerCase();
+    const lowerCaseQuery = this.query;
+
+    let submitButton = () => {
+      if (this.state.changed === 0) {
+        return "Lưu lại";
+      } else {
+        return "Lưu lại (" + this.state.changed + " thay đổi)";
+      }
+    }
 
     const useToolbarStyles = makeStyles(theme => ({
       root: {
@@ -352,20 +369,29 @@ class DetailUnit extends Component {
                         editIdx={this.state.editIdx}
                         handleRemove={this.handleRequestSort}
                         startEditing={this.startEditing}
-                        handleSave={this.handleSave}
+                        handleChange={this.handleChange}
                         stopEditing={this.stopEditing}
                         status={this.state.status}
-
                         handleChangePage={this.handleChangePage}
                         handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-
                       >
-
                       </EditableTable>
+                      <div className="ml-40 mt-30">
+                        <Button variant="contained" color="primary" type="submit" name="save">
+                          <i className="material-icons icon left">save</i>&nbsp;
+                        {submitButton()}
+                        </Button> &nbsp;
+                      </div>
+                      <Pagination
+                        rows={this.state.rows}
+                        rowsPerPage={this.state.rowsPerPage}
+                        page={this.state.page}
+                        handleChangePage={this.handleChangePage}
+                        handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                      />
                     </form>
                   </div>
                 </div>
-
               </Paper>
             </div>
           </div>
@@ -378,4 +404,4 @@ class DetailUnit extends Component {
 
 
 
-export default DetailUnit
+export default DeliveryStatusUpdate

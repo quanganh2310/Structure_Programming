@@ -11,7 +11,8 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import CreateIcon from '@material-ui/icons/Create';
 import Pagination from './Pagination';
 import InlineForm from './InlineForm';
-import { Collapse } from '@material-ui/core';
+import { RowDetailState } from '@devexpress/dx-react-grid';
+import { TableRowDetail } from '@devexpress/dx-react-grid-material-ui';
 
 
 class EditableTable extends Component {
@@ -131,6 +132,18 @@ class EditableTable extends Component {
       rowCount: PropTypes.number.isRequired,
     };
 
+    const RowDetail = ({ row }) => (
+      <div>
+        Details for
+        {' '}
+        {row.order_id}
+        {' '}
+        from
+        {' '}
+        {row.unit_name}
+      </div>
+    );
+
     let renderRow = (x, i, y) => {
       function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -159,6 +172,10 @@ class EditableTable extends Component {
           />
         </TableRow>
       ) : (
+        // <TableRowDetail
+        //   contentComponent={RowDetail}
+        //   key={`tr-${i}`}
+        // >
         <TableRow key={`tr-${i}`} >
           {header.map((y, k) =>
             <TableCell key={`trc-${k}`}>
@@ -174,6 +191,7 @@ class EditableTable extends Component {
             <p></p>
           </TableCell>
         </TableRow>
+        // </TableRowDetail>
       );
     }
 
@@ -181,6 +199,9 @@ class EditableTable extends Component {
 
     return (
       <div>
+      {/* <RowDetailState
+          defaultExpandedRowIds={[2, 5]}
+        /> */}
         <Table
           className={classes.table}
           aria-labelledby="tableTitle"
