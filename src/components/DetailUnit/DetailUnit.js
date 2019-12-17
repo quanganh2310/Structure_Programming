@@ -372,19 +372,14 @@ class DeliveryStatusUpdate extends Component {
                         handleChange={this.handleChange}
                         stopEditing={this.stopEditing}
                         status={this.state.status}
-
                         handleChangePage={this.handleChangePage}
                         handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-
                       >
-
                       </EditableTable>
                       <div className="ml-40 mt-30">
-
                         <Button variant="contained" color="primary" type="submit" name="save">
                           <i className="material-icons icon left">save</i>&nbsp;
                         {submitButton()}
-
                         </Button> &nbsp;
                       </div>
                       <Pagination
@@ -397,7 +392,6 @@ class DeliveryStatusUpdate extends Component {
                     </form>
                   </div>
                 </div>
-
               </Paper>
             </div>
           </div>
