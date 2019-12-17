@@ -19,6 +19,7 @@ import Grid from '@material-ui/core/Grid';
 class DeliveryStatusUpdate extends Component {
   constructor(props) {
     super(props);
+    this.query = this.props.match.params.unitId
     this.state = {
       headCells: [
         { id: 'order_id', numeric: false, disablePadding: true, label: 'Mã hóa đơn' },
@@ -64,8 +65,7 @@ class DeliveryStatusUpdate extends Component {
       dense: false,
       rowsPerPage: 5,
       editIdx: -1,
-      query: "",
-      columnToQuery: "", isloading: true
+      columnToQuery: "delivery_unit_id", isloading: true
     };
   };
 
@@ -82,9 +82,12 @@ class DeliveryStatusUpdate extends Component {
   }
 
   componentDidMount() {
+    console.log('PROPS: ', this.props.match.params )
+    
     this.setState({
-      isloading: true
+      isloading: true,
     });
+    console.log("query", this.query)
     axios.all([this.getUnits(), this.getShippers(), this.getDeliveries()])
       .then(axios.spread((units, shippers, deliveries) => {
         this.setState({
@@ -243,7 +246,7 @@ class DeliveryStatusUpdate extends Component {
 
   render() {
 
-    const lowerCaseQuery = this.state.query.toLowerCase();
+    const lowerCaseQuery = this.query;
 
     let submitButton = () => {
       if (this.state.changed === 0) {
@@ -347,7 +350,7 @@ class DeliveryStatusUpdate extends Component {
                     <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
                       <EditableTable
                         rows={orderBy(
-                          this.state.query
+                          this.query
                             ? this.state.rows.filter(x =>
                               String(x[this.state.columnToQuery]).toLowerCase().includes(lowerCaseQuery)
                             )
