@@ -9,27 +9,22 @@ import LeftBar from './components/LeftBar/LeftBar'
 import Main from './components/Content/Main'
 import DeliveryStatusUpdate from './components/StatusUpdate/DeliveryStatusUpdate'
 import DeliveryStatusShow from './components/StatusShow/DeliveryStatusShow'
+import DetailUnit from './components/DetailUnit/DetailUnit'
 
 
 function App() {
   return (
-    <div className="mainWrap">
+    <div >
       <BrowserRouter>
         <Header />
         <MenuBar />
-        <Grid
-          container
-          direction="row"
-        >
-          <div>
-            <hr />
-            <div className="main-route-place">
-              <Route exact path="/" component={DeliveryStatusUpdate} />
-              <Route path="/delivery_units" component={Main} />
-              <Route path="/deliveries" component={DeliveryStatusUpdate} />
-            </div>
-          </div>
-        </Grid>
+      
+        <Route exact path="/" component={DeliveryStatusUpdate} />
+        <Route path="/delivery_units" component={Main} />
+        <Route path="/deliveries" component={DeliveryStatusUpdate} />
+        {/* <Route path="/detail_unit" component={DetailUnit}/> */}
+        <Route path="/detail_unit/:unitId" component={DetailUnit}  />
+
       </BrowserRouter>
     </div>
   );
