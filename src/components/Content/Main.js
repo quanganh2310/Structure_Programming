@@ -29,12 +29,6 @@ export default function Main() {
 
     const classes = useStyles();
     const [state, setState] = React.useState({
-        columns: [
-            
-        ],
-        data: [
-            
-        ],
         actions: [{
             hidden: true,
             disabled: true,
@@ -59,7 +53,6 @@ export default function Main() {
                             {rowData.name}
                         </Link>
                         
-                        <Route path="/detail_unit/:unitId" component={DetailUnit}  />
              
                     </>
                 )

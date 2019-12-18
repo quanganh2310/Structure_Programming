@@ -11,9 +11,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import CreateIcon from '@material-ui/icons/Create';
 import Pagination from './Pagination';
 import InlineForm from './InlineForm';
-import { RowDetailState } from '@devexpress/dx-react-grid';
-import { TableRowDetail } from '@devexpress/dx-react-grid-material-ui';
-
 
 class EditableTable extends Component {
 
