@@ -11,8 +11,13 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import CreateIcon from '@material-ui/icons/Create';
 import Pagination from './Pagination';
 import InlineForm from './InlineForm';
+import DetailsIcon from '@material-ui/icons/Details';
 import { RowDetailState } from '@devexpress/dx-react-grid';
 import { TableRowDetail } from '@devexpress/dx-react-grid-material-ui';
+import { hidden } from 'ansi-colors';
+import { Link, BrowserRouter, Route, Router } from 'react-router-dom';
+import { getRequest, postRequest, deleteRequest } from '../.././API/FetchData';
+import DetailPage from '../DetailPageShow/DetailPage'
 
 
 class EditableTable extends Component {
@@ -158,7 +163,7 @@ class EditableTable extends Component {
 
     }
 
-    const row = (x, i, header, handleRemove, startEditing, editIdx, handleSave, stopEditing,status) => {
+    const row = (x, i, header, handleRemove, startEditing, editIdx, handleSave, stopEditing, status) => {
       const currentlyEditing = editIdx === i;
       return currentlyEditing ? (
         <TableRow key={`inline-form-${i}`} >
@@ -172,34 +177,38 @@ class EditableTable extends Component {
           />
         </TableRow>
       ) : (
-        // <TableRowDetail
-        //   contentComponent={RowDetail}
-        //   key={`tr-${i}`}
-        // >
-        <TableRow key={`tr-${i}`} >
-          {header.map((y, k) =>
-            <TableCell key={`trc-${k}`}>
-              {renderRow(x, i, y)}
+          <TableRow key={`tr-${i}`} >
+            {header.map((y, k) =>
+              <TableCell key={`trc-${k}`}>
+                {renderRow(x, i, y)}
+              </TableCell>
+            )}
+            <TableCell>
+              <CreateIcon cursor="pointer" onClick={() => startEditing(i)} />
             </TableCell>
-          )}
-          <TableCell>
-            <CreateIcon cursor="pointer" onClick={() => startEditing(i)} />
-          </TableCell>
-          <TableCell>
-          {/* <Collapse></Collapse> */}
+            <TableCell>
+              <>
+                <Link to={`/detail_delivery/${x.order_id}`} 
+                style={{ textDecoration: 'none' }} 
+                >
+                {/* Detail */}
+                  <DetailsIcon cursor="pointer" 
+                  // onClick={() => (i)} 
 
-            <p></p>
-          </TableCell>
-        </TableRow>
-        // </TableRowDetail>
-      );
+                  />
+                </Link>
+                <Route path="/detail_delivery/:deliveryId" component={DetailPage} />
+              </>
+            </TableCell>
+          </TableRow>
+        );
     }
 
     const emptyRows = this.props.rowsPerPage - Math.min(this.props.rowsPerPage, this.props.rows.length - this.props.page * this.props.rowsPerPage);
 
     return (
       <div>
-      {/* <RowDetailState
+        {/* <RowDetailState
           defaultExpandedRowIds={[2, 5]}
         /> */}
         <Table
@@ -221,7 +230,7 @@ class EditableTable extends Component {
               stableSort(this.props.rows,
                 getSorting(this.props.order, this.props.orderBy))
                 .slice(this.props.page * this.props.rowsPerPage, this.props.page * this.props.rowsPerPage + this.props.rowsPerPage)
-                .map((x, i) => row(x, i, this.props.headCells, this.props.handleRemove, this.props.startEditing, this.props.editIdx, this.props.handleSave, this.props.stopEditing,this.props.status))
+                .map((x, i) => row(x, i, this.props.headCells, this.props.handleRemove, this.props.startEditing, this.props.editIdx, this.props.handleSave, this.props.stopEditing, this.props.status))
             }
             {emptyRows > 0 && (
               <TableRow style={{ height: (this.props.dense ? 33 : 53) * emptyRows }}>

@@ -10,6 +10,7 @@ import Main from './components/Content/Main'
 import DeliveryStatusUpdate from './components/StatusUpdate/DeliveryStatusUpdate'
 import DeliveryStatusShow from './components/StatusShow/DeliveryStatusShow'
 import DetailUnit from './components/DetailUnit/DetailUnit'
+import DetailPage from './components/DetailPageShow/DetailPage'
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
         <Route path="/delivery_units" component={Main} />
         <Route path="/deliveries" component={DeliveryStatusUpdate} />
         <Route path="/detail_unit/:unitId" component={DetailUnit}  />
-
+        <Route path="/detail_delivery/:deliveryId" component={DetailPage} />
       </BrowserRouter>
     </div>
   );

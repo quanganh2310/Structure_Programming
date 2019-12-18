@@ -4,6 +4,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import TableCell from '@material-ui/core/TableCell';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
+
 
 export default class Form extends React.Component {
   constructor(props) {
@@ -101,7 +103,16 @@ export default class Form extends React.Component {
             </TableCell>
 
           )
-        } else {
+        } 
+        else if (y.id === "shipper_name") {
+          return (
+            <TableCell key={`trc-${k}`}>
+              <Button color="primary" onClick={this.props.handleAddShipper}>Add shipper</Button> 
+            </TableCell>
+
+          )
+        }
+        else {
           return (
             <TableCell key={`trc-${k}`}>
               {this.props.x[y.id]}

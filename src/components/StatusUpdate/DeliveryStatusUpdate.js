@@ -176,7 +176,7 @@ class DeliveryStatusUpdate extends Component {
 
     this.state.rows.map((row, index) => {
       if (row.order_id === x.order_id) {
-        this.updateStatus(x.status_name, row)
+        this.updateStatus(x.status_name, row, x,this.state)
       }
     });
     this.stopEditing();
@@ -232,7 +232,11 @@ class DeliveryStatusUpdate extends Component {
     console.log(this.state);
   }
 
-  updateStatus = (value, row) => {
+  handleAddShipper = () => {
+
+  }
+
+  updateStatus = (value, row, x,state) => {
     this.state.status.forEach(st => {
       if (st.name === value) {
 
@@ -243,6 +247,18 @@ class DeliveryStatusUpdate extends Component {
         callApi(endpoint, 'PATCH',
           jsonfile).then(res => {
             console.log(res);
+            const shipperId='shipper_id';
+            const shipperName='shipper_name';
+            state.shippers.forEach(shipper=>{
+              if(shipper.id === res.data.shipper_id) {
+                this.setState({
+                  rows: state.rows.map((r, j) => (r.order_id === x.order_id ? { ...row, [shipperName]: shipper.name}  : r))
+                })
+              }
+            })
+            this.setState({
+              rows: state.rows.map((r, j) => (r.order_id === x.order_id ? { ...row, [shipperId]: res.data.shipper_id}  : r))
+            })
           });
 
       }
@@ -391,6 +407,7 @@ class DeliveryStatusUpdate extends Component {
 
                         handleChangePage={this.handleChangePage}
                         handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+                        handleAddShipper={this.handleAddShipper}
 
                       >
 

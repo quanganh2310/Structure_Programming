@@ -11,6 +11,14 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import CreateIcon from '@material-ui/icons/Create';
 import Pagination from './Pagination';
 import InlineForm from './InlineForm';
+import DetailsIcon from '@material-ui/icons/Details';
+import { RowDetailState } from '@devexpress/dx-react-grid';
+import { TableRowDetail } from '@devexpress/dx-react-grid-material-ui';
+import { hidden } from 'ansi-colors';
+import { Link, BrowserRouter, Route, Router } from 'react-router-dom';
+import { getRequest, postRequest, deleteRequest } from '../.././API/FetchData';
+import DetailPage from '../DetailPageShow/DetailPage'
+
 
 class EditableTable extends Component {
 
@@ -183,12 +191,20 @@ class EditableTable extends Component {
             <CreateIcon cursor="pointer" onClick={() => startEditing(i)} />
           </TableCell>
           <TableCell>
-          {/* <Collapse></Collapse> */}
+          <>
+                <Link to={`/detail_delivery/${x.order_id}`} 
+                style={{ textDecoration: 'none' }} 
+                >
+                {/* Detail */}
+                  <DetailsIcon cursor="pointer" 
+                  // onClick={() => (i)} 
 
-            <p></p>
+                  />
+                </Link>
+                <Route path="/detail_delivery/:deliveryId" component={DetailPage} />
+              </>
           </TableCell>
         </TableRow>
-        // </TableRowDetail>
       );
     }
 

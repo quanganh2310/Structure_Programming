@@ -1,0 +1,37 @@
+#container{
+  flex: 1 auto;
+  width: 100%;
+}
+
+#header{
+  background-color: chocolate;
+  height: 15vmin;
+}
+
+#main {
+  padding-top: 20px;
+  background-color: #F5F5F5;
+  height: 1400px;
+  width: 100%;
+}
+
+#left{
+  width: 15%;
+  min-height: 400px;
+  float:left;
+  background-color: #004C00;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  margin-left: 100px;
+}
+
+#content{
+  width: 1000px;
+  min-height: 400px;
+  float:left;
+  margin-left: 2%;
+  margin-right: 4%;
+  margin-bottom: 5px;
+  background-color: #F5F5F5;
+}
+
