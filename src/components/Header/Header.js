@@ -14,6 +14,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import { Link, Route, BrowserRouter } from 'react-router-dom'
+import { black } from 'ansi-colors';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -102,6 +104,12 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const Logout = () =>{
+      return (
+        <a href="https://online-selling-website.herokuapp.com/logout">New site</a>
+      )
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -115,6 +123,11 @@ export default function PrimarySearchAppBar() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <a href="https://online-selling-website.herokuapp.com/logout" style={{textDecoration: 'none' , color: 'black'}}>
+        <MenuItem>
+          Log out
+        </MenuItem>
+      </a>
     </Menu>
   );
 
