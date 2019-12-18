@@ -58,7 +58,7 @@ export default function Main() {
                 )
             },
             { title: 'Phí giao hàng', field: 'base_fee' },
-            { title: 'Tổng số đơn hàng', field: 'delivery_time' },
+            { title: 'Số ngày giao hàng dự tính', field: 'delivery_time' },
         ]
         newState.actions= [{
             hidden: true,
@@ -92,7 +92,7 @@ export default function Main() {
                         </Button>
                     </Typography>
                     <MaterialTable
-                        title="Editable Example"
+                        title="Delevery Units"
                         columns={state.columns}
                         data={state.data}
                         actions={state.actions}
@@ -109,31 +109,31 @@ export default function Main() {
                                         });
                                     }, 600);
                                 })},
-                            onRowUpdate: (newData, oldData) =>
-                                new Promise(resolve => {
-                                    setTimeout(() => {
-                                        resolve();
-                                        if (oldData) {
-                                            setState(prevState => {
-                                                const data = [...prevState.data];
-                                                data[data.indexOf(oldData)] = newData;
-                                                return { ...prevState, data };
-                                            });
-                                        }
-                                    }, 600);
-                                }),
-                            onRowDelete: async(oldData) => {
-                                await deleteRequest('delivery_units', oldData)
-                                new Promise(resolve => {
-                                    setTimeout(() => {
-                                        resolve();
-                                        setState(prevState => {
-                                            const data = [...prevState.data];
-                                            data.splice(data.indexOf(oldData), 1);
-                                            return { ...prevState, data };
-                                        });
-                                    }, 600);
-                                })},
+                            // onRowUpdate: (newData, oldData) =>
+                            //     new Promise(resolve => {
+                            //         setTimeout(() => {
+                            //             resolve();
+                            //             if (oldData) {
+                            //                 setState(prevState => {
+                            //                     const data = [...prevState.data];
+                            //                     data[data.indexOf(oldData)] = newData;
+                            //                     return { ...prevState, data };
+                            //                 });
+                            //             }
+                            //         }, 600);
+                            //     }),
+                            // onRowDelete: async(oldData) => {
+                            //     await deleteRequest('delivery_units', oldData)
+                            //     new Promise(resolve => {
+                            //         setTimeout(() => {
+                            //             resolve();
+                            //             setState(prevState => {
+                            //                 const data = [...prevState.data];
+                            //                 data.splice(data.indexOf(oldData), 1);
+                            //                 return { ...prevState, data };
+                            //             });
+                            //         }, 600);
+                            //     })},
                         }}
                     />
                 </Grid>
