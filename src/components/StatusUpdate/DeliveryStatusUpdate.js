@@ -176,7 +176,7 @@ class DeliveryStatusUpdate extends Component {
 
     this.state.rows.map((row, index) => {
       if (row.order_id === x.order_id) {
-        this.updateStatus(x.status_name, row, x,this.state)
+        this.updateStatus(x.status_name, row, x,this.state.shippers)
       }
     });
     this.stopEditing();
@@ -236,7 +236,7 @@ class DeliveryStatusUpdate extends Component {
 
   }
 
-  updateStatus = (value, row, x,state) => {
+  updateStatus = (value, row, x,data) => {
     this.state.status.forEach(st => {
       if (st.name === value) {
 
@@ -249,16 +249,16 @@ class DeliveryStatusUpdate extends Component {
             console.log(res);
             const shipperId='shipper_id';
             const shipperName='shipper_name';
-            state.shippers.forEach(shipper=>{
+            data.forEach(shipper=>{
               if(shipper.id === res.data.shipper_id) {
-                this.setState({
-                  rows: state.rows.map((r, j) => (r.order_id === x.order_id ? { ...row, [shipperName]: shipper.name}  : r))
-                })
+                this.setState(state =>({
+                  rows: state.rows.map((r, j) => (r.order_id === x.order_id ? { ...r, [shipperName]: shipper.name}  : r))
+                }))
               }
             })
-            this.setState({
-              rows: state.rows.map((r, j) => (r.order_id === x.order_id ? { ...row, [shipperId]: res.data.shipper_id}  : r))
-            })
+            this.setState(state => ({
+              rows: state.rows.map((r, j) => (r.order_id === x.order_id ? { ...r, [shipperId]: res.data.shipper_id}  : r))
+            }))
           });
 
       }
