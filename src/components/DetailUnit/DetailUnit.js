@@ -161,7 +161,7 @@ class DetailUnit extends Component {
 
     this.state.rows.map((row, index) => {
       if (row.order_id === x.order_id) {
-        this.updateStatus(x.status_name, row)
+        this.updateStatus(x.status_name, row, x,this.state.shippers)
       }
     });
     this.stopEditing();
@@ -217,7 +217,7 @@ class DetailUnit extends Component {
     console.log(this.state);
   }
 
-  updateStatus = (value, row) => {
+  updateStatus = (value, row, x,data) => {
     this.state.status.forEach(st => {
       if (st.name === value) {
 
@@ -228,6 +228,18 @@ class DetailUnit extends Component {
         callApi(endpoint, 'PATCH',
           jsonfile).then(res => {
             console.log(res);
+            const shipperId='shipper_id';
+            const shipperName='shipper_name';
+            data.forEach(shipper=>{
+              if(shipper.id === res.data.shipper_id) {
+                this.setState(state =>({
+                  rows: state.rows.map((r, j) => (r.order_id === x.order_id ? { ...r, [shipperName]: shipper.name}  : r))
+                }))
+              }
+            })
+            this.setState(state => ({
+              rows: state.rows.map((r, j) => (r.order_id === x.order_id ? { ...r, [shipperId]: res.data.shipper_id}  : r))
+            }))
           });
 
       }
