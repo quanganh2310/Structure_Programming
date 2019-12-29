@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import FetchData from './API/FetchData'
 import StatusUpdate from './components/StatusUpdate/DeliveryStatusUpdate'
+import StatusShow from './components/StatusShow/DeliveryStatusShow'
+
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
