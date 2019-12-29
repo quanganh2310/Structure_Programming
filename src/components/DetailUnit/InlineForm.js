@@ -103,14 +103,14 @@ export default class Form extends React.Component {
             </TableCell>
 
           )
-        } 
-        else if (y.id === "shipper_name") {
-          return (
-            <TableCell key={`trc-${k}`}>
-              <Button>Add shipper</Button> 
-            </TableCell>
+        // } 
+        // else if (y.id === "shipper_name") {
+        //   return (
+        //     <TableCell key={`trc-${k}`}>
+        //       <Button>Add shipper</Button> 
+        //     </TableCell>
 
-          )
+        //   )
         }else {
           return (
             <TableCell key={`trc-${k}`}>
